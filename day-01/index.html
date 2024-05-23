@@ -6,11 +6,91 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>Hello World</h1>
-    <script>
-      // Mã JS
-      console.log("Hello world");
-    </script>
-    <script src="./js/index.js"></script>
+    <h1>Bài tập buổi 1</h1>
+    <div>
+      <h2>Bài 1 - Hoán vị 2 số không dùng đến biến trung gian</h2>
+      <div>
+        <div>
+          <label for="number_1">Số A</label>
+          <input id="number_1" type="number" />
+        </div>
+        <div>
+          <label for="number_2">Số B</label>
+          <input id="number_2" type="number" />
+        </div>
+        <div><button id="btnSubmit">Hoán vị</button></div>
+        <div>
+          <p>
+            Số A sau khi hoán vị:
+            <span id="number_1-afterHandle"></span>
+          </p>
+          <p>
+            Số B sau khi hoán vị:
+            <span id="number_2-afterHandle"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2>
+        Bài 2: Thực hiện phép toán Viết chương trình tính toán biểu thức sau S =
+        10 + 20 + 5^10 / 2
+      </h2>
+      <p>S = 10 + 20 + 5^10 / 2 = <span id="resultEx2"></span></p>
+    </div>
+    <div>
+      <h2>Bài 3: Tìm số lớn nhất</h2>
+      <div>
+        <label for="ex03_number_1">Số A</label>
+        <input id="ex03_number_1" type="number" />
+      </div>
+      <div>
+        <label for="ex03_number_2">Số B</label>
+        <input id="ex03_number_2" type="number" />
+      </div>
+      <div>
+        <label for="ex03_number_3">Số C</label>
+        <input id="ex03_number_3" type="number" />
+      </div>
+      <div><button id="ex03_btnSubmit">Tìm số lơn nhất</button></div>
+      <p>Số lớn nhất là: <span id="ex03_result"></span></p>
+    </div>
+    <div>
+      <h2>Bài 4: Kiểm tra số cùng dấu</h2>
+      <div>
+        <label for="ex04_number_1">Số A</label>
+        <input id="ex04_number_1" type="number" />
+      </div>
+      <div>
+        <label for="ex04_number_2">Số B</label>
+        <input id="ex04_number_2" type="number" />
+      </div>
+      <div><button id="ex04_btnSubmit">Kiểm tra</button></div>
+      <p>Kết quả: <span id="ex04_result"></span></p>
+    </div>
+    <div>
+      <h2>
+        Bài 5: Sắp xếp 3 số (Thực hiện đổi chỗ 3 số a, b, c sao cho 3 số có thứ
+        tự tăng dần)
+      </h2>
+      <div>
+        <label for="ex05_number_1">Số A</label>
+        <input id="ex05_number_1" type="number" />
+      </div>
+      <div>
+        <label for="ex05_number_2">Số B</label>
+        <input id="ex05_number_2" type="number" />
+      </div>
+      <div>
+        <label for="ex05_number_3">Số C</label>
+        <input id="ex05_number_3" type="number" />
+      </div>
+      <div><button id="ex05_btnSubmit">Sắp xếp</button></div>
+      <p>Thứ tự ban đầu: <span id="ex05_result_origin"></span></p>
+      <p>Thứ tự tăng dần: <span id="ex05_result"></span></p>
+    </div>
+    <!-- <script src="./variables/ex01.js"></script> -->
+    <!-- <script src="./operator/ex01.js"></script> -->
+    <script src="./exercise/index.js"></script>
   </body>
 </html>
