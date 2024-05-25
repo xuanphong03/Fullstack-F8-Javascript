@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day 02</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <h1>Bài tập buổi 2</h1>
+    <div>
+      <div>
+        <h2>Bài 1</h2>
+        <input
+          type="number"
+          placeholder="Nhập số km đã đi"
+          id="ex01_kmNum_input"
+        />
+        <button id="ex01_btnSubmit">Tính tiền</button>
+        <p>Tổng tiền: <span id="ex01_totalTaxiCost"></span></p>
+      </div>
+
+      <div>
+        <h2>Bài 2: Tính tiền điện</h2>
+        <input
+          type="number"
+          placeholder="Nhập số điện đã tiêu thụ"
+          id="ex02_consumedElectricity"
+        />
+        <button id="ex02_btnSubmit">Tính tiền</button>
+        <p>Tổng tiền: <span id="ex02_totalElectricityBill"></span></p>
+      </div>
+
+      <div>
+        <h2>Bài 3: Tính giá trị biểu thức</h2>
+        <p>S= 1*2 + 2*3 + 3*4 + ... + n*(n+1)</p>
+        <input type="number" placeholder="Nhập số nguyên n" id="ex03_input" />
+        <button id="ex03_btnSubmit">Tính giá trị biểu thức</button>
+        <p>Giá trị biểu thức: <span id="ex03_result"></span></p>
+      </div>
+
+      <div>
+        <h2>Bài 4: Viết hàm kiểm tra số nguyên tố</h2>
+        <input
+          type="number"
+          placeholder="Nhập số nguyên dương"
+          id="ex04_intNumber"
+        />
+        <button id="ex04_btnSubmit">Kiểm tra</button>
+        <p>Kết quả: <span id="ex04_result"></span></p>
+      </div>
+
+      <div>
+        <h2>Bài 5: Vẽ tam giác số</h2>
+        <input type="number" placeholder="Nhập số dòng" id="ex05_rowNumber" />
+        <button id="ex05_btnSubmit">Bắt đầu vẽ</button>
+        <p>Kết quả:</p>
+        <div id="ex05_result"></div>
+      </div>
+
+      <div>
+        <h2>Bài 6: Vẽ bàn cờ vua</h2>
+        <button id="ex06_draw">Vẽ bàn cờ vua</button>
+        <div id="ex06_result"></div>
+      </div>
+
+      <div>
+        <h2>Bài 7: Vẽ bảng cửu chương</h2>
+        <input
+          type="number"
+          name="multiplication table"
+          placeholder="Nhập bảng cửu chương muốn vẽ"
+          id="ex07_multiplicationTableName"
+        />
+        <button id="ex07_drawMultiplicationTable">Vẽ bảng cửu chương</button>
+        <div style="margin-top: 20px" id="ex07_result"></div>
+      </div>
+
+      <div>
+        <h2>Bài 8: Tính giá trị biểu thức không dùng vòng lặp</h2>
+        <p>Tính giá trị biểu thức: S = 1 + 1/2 + 1/3 + 1/4 + 1/5 +…+1/N</p>
+        <input type="number" placeholder="Nhập số n" id="ex08_input" />
+        <button id="ex08_btnSubmit">Tính giá trị biểu thức</button>
+        <p>Giá trị biểu thức: <span id="ex08_expressionValue"></span></p>
+      </div>
+    </div>
+    <script src="./js/index.js"></script>
+    <!-- <script src="../lythuyet/ex02.js"></script> -->
+  </body>
+</html>
