@@ -11,7 +11,7 @@ ex01_btnSubmit.onclick = function calculateTaxiCost() {
   const priceLevel_3 = 11000;
 
   if (isNaN(kmNumber) || kmNumber < 0) {
-    alert("Số km không hợp lệ");
+    ex01_totalTaxiCost.innerText = "Số km không hợp lệ";
     return;
   } else if (kmNumber >= 0 && kmNumber <= 1) {
     totalTaxiCost = kmNumber * priceLevel_1;
@@ -108,20 +108,24 @@ let ex04_intNumber = document.getElementById("ex04_intNumber");
 let ex04_btnSubmit = document.getElementById("ex04_btnSubmit");
 let ex04_result = document.getElementById("ex04_result");
 
-ex04_btnSubmit.onclick = function handleCheck() {
-  let number = ex04_intNumber.value;
-  function checkPrimeNumber(n) {
-    let isPrimeNumber = true;
-    for (var i = 2; i <= Math.sqrt(n); i++) {
-      if (n % i === 0) {
-        isPrimeNumber = false;
-        break;
-      }
-    }
-    return isPrimeNumber;
+function checkPrimeNumber(n) {
+  let isPrimeNumber = true;
+  if (n === 1) {
+    return false;
   }
-  if (number <= 1 || number % 1 !== 0) {
-    ex04_result.innerText = "Nhập số nguyên dương lớn hơn 1";
+  for (var i = 2; i <= Math.sqrt(n); i++) {
+    if (n % i === 0) {
+      isPrimeNumber = false;
+      break;
+    }
+  }
+  return isPrimeNumber;
+}
+
+ex04_btnSubmit.onclick = function handleCheck() {
+  let number = parseFloat(ex04_intNumber.value);
+  if (number < 1 || number % 1 !== 0) {
+    ex04_result.innerText = "Nhập số nguyên dương lớn hơn hoặc bằng 1";
   } else {
     if (checkPrimeNumber(number)) {
       ex04_result.innerText = `${number} là Số nguyên tố `;
