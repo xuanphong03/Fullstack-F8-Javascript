@@ -12,9 +12,14 @@ function fibonacci(n) {
 ex01_btnSubmit.onclick = function showFibonacci() {
   let n = parseFloat(ex01_number.value);
   if (n % 1 !== 0 || n < 1) {
-    ex01_result.innerText = "Vui lòng nhập vào 1 số nguyên lớn hơn hoặc bằng 1";
+    if (n % 1 !== 0) {
+      ex01_result.innerText = "Vui lòng nhập vào 1 số nguyên";
+      return;
+    }
+    ex01_result.innerText = "Vui lòng nhập vào 1 số lớn hơn hoặc bằng 1";
     return;
   }
+
   let result = "";
   for (let i = 1; i <= n; i++) {
     result += `<div>Fibonacci(${i}) = ${fibonacci(i)}</div>`;

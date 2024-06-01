@@ -143,6 +143,11 @@ var getA = function (cb) {
     console.log("getA");
     if (typeof cb === "function") {
       cb();
+      /**
+       * (Function () {
+       *  getB(getC)
+       * })()
+       */
     }
   }, 1000);
 };
@@ -162,8 +167,18 @@ var getC = function (cb) {
     }
   }, 1500);
 };
+var getD = function (cb) {
+  setTimeout(function () {
+    console.log("getD");
+    if (typeof cb === "function") {
+      cb();
+    }
+  }, 2500);
+};
 getA(function () {
-  getB(getC);
+  getB(function () {
+    getC(getD);
+  });
 });
 // getB();
 // getC();

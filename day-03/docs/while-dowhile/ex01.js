@@ -4,7 +4,8 @@
  *  Câu lệnh
  * }
  *
- * Các bước chạy:
+ * Từ khóa break: Thoát vòng lặp khi chưa kết thúc
+ *
  * */
 
 var i = 0;
