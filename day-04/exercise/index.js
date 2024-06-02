@@ -1,5 +1,5 @@
 var content =
-  "Lorem ipsum dolor sit amet consectetur adipisicing elit cumque eaque itaque  et debitis at a quae repellat iusto exercitationem ab ullam Similique vel aliquam aliquid quidem dolores neque nulla";
+  "Lorem ipsum dolor sit amet consectetur adipisicing elit cumque eaque itaque debitis quae repellat iusto exercitationem ab ullam Similique vel aliquam aliquid quidem dolores neque nulla";
 var arrContent = content.split(" ");
 console.log(arrContent);
 let position;
