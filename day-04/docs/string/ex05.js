@@ -1,22 +1,63 @@
 // Bài 1 -> Chuyển họ và tên viết sai thành viết đúng quy tắc
-var fullname = "tạ    hoàng     an    ";
-fullname = fullname.trim();
+var fullName = "tạ    hoàng     an    ";
+fullName = fullName.trim();
 // output = Tạ Hoàng An
 // Không dùng mảng
-fullname = fullname.charAt(0).toUpperCase() + fullname.slice(1);
-for (let i = 0; i < fullname.length; i++) {
-  var char = fullname.charAt(i);
-  var charNext = fullname.charAt(i + 1);
+fullName = fullName.charAt(0).toUpperCase() + fullName.slice(1);
+for (let i = 0; i < fullName.length; i++) {
+  var char = fullName.charAt(i);
+  var charNext = fullName.charAt(i + 1);
   if (char === " ") {
     if (char === " " && charNext !== " ") {
       var index = i + 1;
-      fullname =
-        fullname.slice(0, index).trim() +
+      fullName =
+        fullName.slice(0, index).trim() +
         " " +
-        fullname.charAt(index).toUpperCase() +
-        fullname.slice(index + 1);
+        fullName.charAt(index).toUpperCase() +
+        fullName.slice(index + 1);
     }
   }
 }
 
-console.log(fullname);
+console.log(fullName);
+
+// Kiểm tra độ mạnh yếu mật khẩu
+/**
+ * >= 8 ký tự
+ * phải có ít nhất 1 kí tự viết hoa
+ * phải có ít nhất 1 kí tự viết thường
+ * phải có ít nhất 1 kí tự viết thường
+ * phải có ít nhất 1 kí tự viết thường
+ */
+
+var password = "Xuanphong@123";
+var isLength = false;
+var isUpper = false;
+var isLower = false;
+var isNumber = false;
+var isSpecial = false;
+if (password.length >= 8) {
+  isLength = true;
+}
+for (let i = 0; i < password.length; i++) {
+  let specialCharsList = "!@#$%^&*()";
+  let numbersList = "123456789";
+  var char = password.charAt(i);
+  if (char >= "A" && char <= "Z") {
+    isUpper = true;
+  }
+  if (char >= "a" && char <= "z") {
+    isLower = true;
+  }
+  if (numbersList.includes(char)) {
+    isNumber = true;
+  }
+  if (specialCharsList.includes(char)) {
+    isSpecial = true;
+  }
+}
+if (isLength && isLower && isUpper && isSpecial && isNumber) {
+  console.log("Mật khẩu mạnh");
+} else {
+  console.log("Mật khẩu yếu");
+}
