@@ -19,5 +19,3 @@ function flatArray(arr) {
 let result = flatArray(arr);
 ex02_input.innerText = `arr: [0, 1, [2, 3], [4, 5, [6, 7]], [8, [9, 10, [11, 12]]]]`;
 ex02_output.innerText = `result: [${result}]`;
-
-console.log(result);
