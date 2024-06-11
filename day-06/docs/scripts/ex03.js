@@ -35,4 +35,3 @@ var arrayB = [5, 2, 6, 7, 1];
 var result = arrayA.filter(function (item) {
   return arrayB.includes(item);
 });
-console.log(result);
