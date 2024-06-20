@@ -51,13 +51,7 @@
 
 // Viết lại vòng lặp map
 var users = ["User 1", "User 2", "User 3", "User 4"];
-function callbackfn(item, index, array) {
-  return {
-    item,
-    index,
-    array,
-  };
-}
+
 Array.prototype.map2 = function (cb) {
   // Kiểm tra callback có phải là hàm không
   if (typeof cb !== "function") {
