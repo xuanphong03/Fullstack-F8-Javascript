@@ -1,13 +1,20 @@
 function sum(...nums) {
+  var inputData = nums[0];
   var errorMessage = "Dữ liệu truyền vào không hợp lệ";
-  var result = 0;
-  for (var i = 0; i < nums.length; i++) {
-    if (typeof nums[i] !== "number") {
+  for (var num of inputData) {
+    if (typeof num !== "number") {
+      console.log(num);
       return errorMessage;
     }
-    result += nums[i];
   }
-  return result;
+  return inputData.reduce(function (pre, cur) {
+    return pre + cur;
+  });
 }
 
-console.log(sum(1, 2, 3, 4, "5"));
+var ex01_input = document.querySelector(".ex01_input");
+var ex01_output = document.querySelector(".ex01_output");
+
+var ex01_data = [1, 2, 3, 4, 5];
+ex01_input.innerText = `Input: ${ex01_data}`;
+ex01_output.innerText = `Output: ${sum(ex01_data)}`;

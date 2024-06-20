@@ -13,4 +13,9 @@ Object.prototype.getCurrency = function (currencyUnit) {
   return `${result} ${currencyUnit}`;
 };
 
-console.log(price.getCurrency("đ"));
+var ex02_input = document.querySelector(".ex02_input");
+var ex02_output = document.querySelector(".ex02_output");
+
+var ex02_data = 100000;
+ex02_input.innerText = `Input: ${ex02_data}`;
+ex02_output.innerText = `Output: ${ex02_data.getCurrency("VNĐ")}`;

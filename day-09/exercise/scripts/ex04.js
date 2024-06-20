@@ -9,15 +9,12 @@ Array.prototype.reduce2 = function (callback, initialValue) {
   return result;
 };
 
-var arr = [1, 2, 3, 4];
-console.log(
-  arr.reduce2(function (prevValue, currentValue) {
-    return prevValue + currentValue;
-  })
-);
-
-var numbers = [2, 9, 5, 1, -5];
-var max = numbers.reduce2(function (prev, current) {
-  return prev > current ? prev : current;
+var ex04_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+var ex04_result = ex04_data.reduce2(function (prev, cur) {
+  return prev + cur;
 });
-console.log(max);
+var ex04_input = document.querySelector(".ex04_input");
+var ex04_output = document.querySelector(".ex04_output");
+
+ex04_input.innerText = `Input: ${ex04_data}`;
+ex04_output.innerText = `Output: (tính tổng input) ${ex04_result}`;

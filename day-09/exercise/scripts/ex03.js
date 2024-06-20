@@ -56,17 +56,33 @@ var data = [
   },
 ];
 
-function buildNestedCategories(categories, parentId = 0) {
-  return categories
-    .filter((category) => category.parent === parentId)
-    .map((category) => {
-      const children = buildNestedCategories(categories, category.id);
-      if (children.length) {
-        return { ...category, children };
-      } else {
-        return { ...category };
+function buildTree(arr, parentId = 0) {
+  var result = [];
+  // Khai báo một mảng mới để tạo cây nested
+  for (var item of arr) {
+    // Nếu như có parent,
+    // check với parentId để xác định cấp con
+    if (item.parent === parentId) {
+      // Đệ quy để tạo cấp con
+      var children = buildTree(arr, item.id);
+      if (children.length > 0) {
+        // Nếu như tạo được cấp con,
+        // đưa vào cấp cha dưới dạng nested
+        item.children = children;
       }
-    });
+      // Xóa key parent cho giống đề bài
+      // Truyền item đã tạo nested vào cây nested
+      var newItem = { ...item };
+      delete newItem.parent;
+      result.push(newItem);
+    }
+  }
+  // trả về cây nested đã được tạo xong
+  return result;
 }
 
-console.log(buildNestedCategories(data));
+var ex03_input = document.querySelector(".ex03_input");
+var ex03_output = document.querySelector(".ex03_output");
+
+ex03_input.innerText = `Input: ${JSON.stringify(data)}`;
+ex03_output.innerText = `Output: ${JSON.stringify(buildTree(data))}`;
