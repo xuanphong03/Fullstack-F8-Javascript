@@ -6,7 +6,6 @@ Array.prototype.push2 = function (...elements) {
 };
 
 var numbers = [1, 2, 3, 4];
-console.log(numbers);
 
 var ex01_input = document.querySelector(".ex01_input");
 var ex01_output = document.querySelector(".ex01_output");

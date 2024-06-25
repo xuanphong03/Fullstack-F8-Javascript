@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dân trí</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="btn_openFormBox">
+        <button class="btn_openForm">Đăng nhập</button>
+      </div>
+      <div class="modal">
+        <div class="form_box">
+          <div class="header_form">
+            <a href="https://dantri.com.vn/" target="_blank">
+              <img
+                src="https://cdnweb.dantri.com.vn/dist/c7b827391b2f30b6fbaf.png"
+                alt="Logo"
+              />
+            </a>
+            <span class="icon_close"><i class="fa-solid fa-xmark"></i></span>
+          </div>
+          <ul class="tabs_list">
+            <li class="tab_item tab_item-login tab_item-active">Đăng nhập</li>
+            <li class="tab_item tab_item-register">Đăng ký</li>
+          </ul>
+          <form name="formLogin" class="form form_login form-active">
+            <div class="input_box">
+              <label for="email_login">Email</label>
+              <div>
+                <input
+                  id="email_login"
+                  type="email"
+                  name="email_login"
+                  placeholder="Email"
+                />
+              </div>
+              <span class="errorMsg">Vui lòng nhập thông tin </span>
+            </div>
+            <div class="input_box">
+              <label for="password_login">Password</label>
+              <div>
+                <input
+                  id="password_login"
+                  type="password"
+                  name="password_login"
+                  placeholder="Mật khẩu"
+                />
+                <span data-name="formLogin" class="icon-toggle">
+                  <i class="icon-show fa-solid fa-eye icon-active"></i>
+                  <i class="icon-hide fa-solid fa-eye-slash"></i>
+                </span>
+              </div>
+              <span class="errorMsg">Vui lòng nhập thông tin </span>
+            </div>
+            <button class="btn_submit">Đăng nhập</button>
+          </form>
+
+          <form name="formRegister" class="form form_register">
+            <div class="input_box">
+              <label for="fullname_register">Họ và tên</label>
+              <div>
+                <input
+                  id="fullname_register"
+                  type="text"
+                  name="fullname_register"
+                  placeholder="Họ và tên"
+                />
+              </div>
+              <span class="errorMsg">Vui lòng nhập thông tin </span>
+            </div>
+            <div class="input_box">
+              <label for="email_register">Email</label>
+              <div>
+                <input
+                  id="email_register"
+                  type="email"
+                  name="email_register"
+                  placeholder="Email"
+                />
+              </div>
+              <span class="errorMsg">Vui lòng nhập thông tin </span>
+            </div>
+            <div class="input_box">
+              <label for="password_register">Password</label>
+              <div>
+                <input
+                  id="password_register"
+                  type="password"
+                  name="password_register"
+                  placeholder="Mật khẩu"
+                />
+                <span data-name="formRegister" class="icon-toggle">
+                  <i class="icon-show fa-solid fa-eye icon-active"></i>
+                  <i class="icon-hide fa-solid fa-eye-slash"></i>
+                </span>
+              </div>
+              <span class="errorMsg">Vui lòng nhập thông tin </span>
+            </div>
+            <button class="btn_submit">Đăng ký</button>
+          </form>
+        </div>
+        <div class="bg_overlay"></div>
+      </div>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>

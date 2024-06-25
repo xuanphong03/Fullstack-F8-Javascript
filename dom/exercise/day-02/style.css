@@ -1,0 +1,186 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+}
+
+html {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+  line-height: 1.5;
+}
+
+.container {
+  position: relative;
+  height: 100vh;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+}
+
+.modal .bg_overlay {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.4);
+  inset: 0;
+}
+
+.modal .form_box {
+  position: absolute;
+  width: 400px;
+  height: 500px;
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 1;
+  border-radius: 8px;
+}
+
+.modal .form_box .header_form {
+  position: relative;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.modal .form_box .header_form a {
+  display: block;
+  height: 40px;
+}
+
+.modal .form_box .header_form a img {
+  max-height: 100%;
+}
+
+.modal .form_box .header_form .icon_close {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal .form_box .header_form .icon_close:hover {
+  background: #ccc;
+}
+
+.modal .form_box .tabs_list {
+  display: flex;
+  list-style: none;
+  background: gray;
+  overflow: hidden;
+}
+
+.modal .form_box .tabs_list .tab_item {
+  flex-basis: 50%;
+  max-width: 50%;
+  text-align: center;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal .form_box .tabs_list .tab_item.tab_item-active {
+  background: green;
+  color: #fff;
+}
+
+.modal .form_box .form {
+  padding: 10px 20px;
+  margin-top: 20px;
+  display: none;
+}
+
+.modal .form_box .form.form-active {
+  display: block;
+}
+
+.modal .form_box .form > div {
+  margin-bottom: 18px;
+}
+
+.modal .form_box .form .input_box label {
+  font-size: 1.4rem;
+}
+
+.modal .form_box .form .input_box .errorMsg {
+  font-style: italic;
+  font-size: 1.2rem;
+  color: red;
+  display: none;
+}
+
+.modal .form_box .form .input_box > div {
+  position: relative;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
+.modal .form_box .form .input_box > div input {
+  width: 100%;
+}
+.modal .form_box .form .input_box > div .icon-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.modal .form_box .form .input_box > div .icon-toggle .icon-show,
+.modal .form_box .form .input_box > div .icon-toggle .icon-hide {
+  display: none;
+}
+.modal .form_box .form .input_box > div .icon-toggle .icon-show.icon-active,
+.modal .form_box .form .input_box > div .icon-toggle .icon-hide.icon-active {
+  display: block;
+}
+
+.modal .form_box .form .btn_submit {
+  width: 100%;
+  background: green;
+  padding: 10px 20px;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.modal .form_box .form .btn_submit:hover {
+  opacity: 0.8;
+}
+
+.btn_openFormBox {
+  width: 500px;
+  margin-inline: auto;
+  margin-top: 100px;
+  text-align: center;
+}
+
+.btn_openFormBox .btn_openForm {
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn_openFormBox .btn_openForm:hover {
+  background: green;
+  color: white;
+}
