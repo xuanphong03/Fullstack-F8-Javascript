@@ -13,6 +13,7 @@ var tabRegister = document.querySelector(".tab_item-register");
 
 var showPassword = false;
 var isFormLogin = true;
+var error = false;
 
 btnToggle.forEach(function (btnToggleEl) {
   var btnShowPassword = btnToggleEl.querySelector(".icon-show");
@@ -97,20 +98,32 @@ function validateEmail(email) {
 }
 
 function validate() {
-  inputBoxList.forEach(function (inputElement) {
+  var inputBoxElList;
+  if (formLogin.classList.contains("form-active")) {
+    inputBoxElList = formLogin.querySelectorAll(".input_box");
+  } else {
+    inputBoxElList = formRegister.querySelectorAll(".input_box");
+  }
+  console.log(formLogin.classList.contains("form-active"));
+  console.log(inputBoxElList);
+  inputBoxElList.forEach(function (inputElement) {
     var inputEl = inputElement.querySelector("input");
     var errorMsg = inputElement.querySelector(".errorMsg");
     if (inputEl.type !== "email") {
       if (!inputEl.value) {
         errorMsg.style.display = "block";
+        error = true;
       } else {
         errorMsg.style.display = "none";
+        error = false;
       }
     } else {
       if (validateEmail(inputEl.value)) {
         errorMsg.style.display = "none";
+        error = false;
       } else {
         errorMsg.style.display = "block";
+        error = true;
       }
     }
   });
@@ -129,6 +142,18 @@ btnSubmitList.forEach(function (btnSubmit) {
   btnSubmit.addEventListener("click", function (e) {
     e.preventDefault();
     validate();
+    if (!error) {
+      console.log("Không lỗi");
+      var loadingEl = btnSubmit.querySelector(".icon-loading");
+      loadingEl.style.display = "flex";
+      setTimeout(function () {
+        loadingEl.style.display = "none";
+        resetInputStatus();
+      }, 500);
+      console.log(loadingEl);
+    } else {
+      console.log("Có lỗi");
+    }
   });
 });
 
@@ -156,6 +181,8 @@ function removeErrorMessage() {
 tabLogin.addEventListener("click", function () {
   if (!tabLogin.classList.contains("tab_item-active")) {
     tabLogin.classList.add("tab_item-active");
+    formLogin.classList.add("form-active");
+    formRegister.classList.remove("form-active");
   }
   tabRegister.classList.remove("tab_item-active");
   isFormLogin = true;
@@ -164,6 +191,8 @@ tabLogin.addEventListener("click", function () {
 tabRegister.addEventListener("click", function () {
   if (!tabRegister.classList.contains("tab_item-active")) {
     tabRegister.classList.add("tab_item-active");
+    formRegister.classList.add("form-active");
+    formLogin.classList.remove("form-active");
   }
   tabLogin.classList.remove("tab_item-active");
   isFormLogin = false;

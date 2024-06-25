@@ -155,6 +155,7 @@ body {
 }
 
 .modal .form_box .form .btn_submit {
+  position: relative;
   width: 100%;
   background: green;
   padding: 10px 20px;
@@ -165,6 +166,20 @@ body {
 }
 .modal .form_box .form .btn_submit:hover {
   opacity: 0.8;
+}
+
+.modal .form_box .form .btn_submit .icon-loading {
+  position: absolute;
+  inset: 0;
+  background: green;
+  border-radius: 4px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal .form_box .form .btn_submit .icon-loading i {
+  animation: spinner 1s linear infinite;
 }
 
 .btn_openFormBox {
@@ -183,4 +198,13 @@ body {
 .btn_openFormBox .btn_openForm:hover {
   background: green;
   color: white;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
