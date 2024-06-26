@@ -97,6 +97,23 @@ function validateEmail(email) {
     );
 }
 
+function checkError(inputElements) {
+  var hasError = false;
+  console.log(inputElements);
+  for (var i = 0; i < inputElements.length; i++) {
+    if (
+      (inputElements[i].type === "email" &&
+        !validateEmail(inputElements[i].value)) ||
+      (inputElements[i].type === "text" && !inputElements[i].length)
+    ) {
+      hasError = true;
+      break;
+    }
+  }
+
+  return hasError;
+}
+
 function validate() {
   var inputBoxElList;
   if (formLogin.classList.contains("form-active")) {
@@ -104,26 +121,21 @@ function validate() {
   } else {
     inputBoxElList = formRegister.querySelectorAll(".input_box");
   }
-  console.log(formLogin.classList.contains("form-active"));
-  console.log(inputBoxElList);
+
   inputBoxElList.forEach(function (inputElement) {
     var inputEl = inputElement.querySelector("input");
     var errorMsg = inputElement.querySelector(".errorMsg");
     if (inputEl.type !== "email") {
       if (!inputEl.value) {
         errorMsg.style.display = "block";
-        error = true;
       } else {
         errorMsg.style.display = "none";
-        error = false;
       }
     } else {
       if (validateEmail(inputEl.value)) {
         errorMsg.style.display = "none";
-        error = false;
       } else {
         errorMsg.style.display = "block";
-        error = true;
       }
     }
   });
@@ -140,19 +152,24 @@ inputBoxList.forEach(function (inputBoxElement) {
 // Submit form
 btnSubmitList.forEach(function (btnSubmit) {
   btnSubmit.addEventListener("click", function (e) {
+    var inputElements;
+
     e.preventDefault();
     validate();
-    if (!error) {
-      console.log("Không lỗi");
+    if (formLogin.classList.contains("form-active")) {
+      inputElements = formLogin.querySelectorAll("input");
+    } else {
+      inputElements = formRegister.querySelectorAll("input");
+    }
+
+    if (!checkError(inputElements)) {
       var loadingEl = btnSubmit.querySelector(".icon-loading");
       loadingEl.style.display = "flex";
       setTimeout(function () {
         loadingEl.style.display = "none";
         resetInputStatus();
       }, 500);
-      console.log(loadingEl);
     } else {
-      console.log("Có lỗi");
     }
   });
 });
