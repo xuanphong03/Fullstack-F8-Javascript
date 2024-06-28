@@ -5,8 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exercise day 03</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
   <body>
+    <div class="container">
+      <h2 class="title">Get thing done!</h2>
+      <form class="todo_form">
+        <input
+          class="todo_input"
+          type="text"
+          name="todo"
+          placeholder="What is the task todo?"
+        />
+        <button class="btn_submit" type="submit">Add task</button>
+      </form>
+      <ul class="todo_list"></ul>
+    </div>
     <script src="./assets/scripts/index.js"></script>
   </body>
 </html>
