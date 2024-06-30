@@ -16,13 +16,13 @@ body {
   line-height: 1.5;
   background-color: #8758ff;
   height: 100vh;
+  padding: 50px;
 }
 
 .container {
   background: #1a1a40;
   width: 450px;
   padding: 32px;
-  margin-top: 100px;
   margin-inline: auto;
   border-radius: 8px;
 }
@@ -34,11 +34,23 @@ body {
   text-transform: capitalize;
   text-align: center;
 }
+
+.container .wrapper {
+  margin: 16px 0 32px;
+}
+
+.container .message {
+  color: red;
+  font-size: 1.4rem;
+  padding: 0 4px;
+  display: none;
+}
+
 .container .todo_form {
   display: flex;
-  margin: 16px 0 32px;
   border-radius: 2px;
   overflow: hidden;
+  margin-bottom: 4px;
 }
 .container .todo_form .todo_input {
   flex: 1;
@@ -54,7 +66,7 @@ body {
   color: #5f5f7a;
   font-size: 1.6rem;
 }
-.container .todo_form .btn_submit {
+.container .todo_form .btn_createTodo {
   background: #8758ff;
   border: 1px solid #8758ff;
   color: #fff;
@@ -66,7 +78,24 @@ body {
 .container .todo_list {
   list-style: none;
   color: #fff;
+  max-height: 350px;
+  overflow-y: auto;
 }
+
+.container .todo_list::-webkit-scrollbar {
+  width: 10px;
+}
+.container .todo_list::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 99px;
+}
+.container .todo_list::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background: #6543ba;
+
+  border-radius: 99px;
+}
+
 .container .todo_list .todo_item {
   display: flex;
   justify-content: space-between;
@@ -79,7 +108,7 @@ body {
 .container .todo_list .todo_item.updating {
   padding: 0;
 }
-.container .todo_list .todo_item .btn_submit {
+.container .todo_list .todo_item .btn_completedUpdate {
   display: none;
   background: #8758ff;
   border: 1px solid #8758ff;
@@ -88,7 +117,7 @@ body {
   cursor: pointer;
   font-size: 1.6rem;
 }
-.container .todo_list .todo_item.updating .btn_submit {
+.container .todo_list .todo_item.updating .btn_completedUpdate {
   display: block;
 }
 .container .todo_list .todo_item.updating .todo_action {

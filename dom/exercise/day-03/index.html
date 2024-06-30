@@ -16,15 +16,18 @@
   <body>
     <div class="container">
       <h2 class="title">Get thing done!</h2>
-      <form class="todo_form">
-        <input
-          class="todo_input"
-          type="text"
-          name="todo"
-          placeholder="What is the task todo?"
-        />
-        <button class="btn_submit" type="submit">Add task</button>
-      </form>
+      <div class="wrapper">
+        <form class="todo_form">
+          <input
+            class="todo_input"
+            type="text"
+            name="todo"
+            placeholder="What is the task todo?"
+          />
+          <button class="btn_createTodo" type="submit">Add task</button>
+        </form>
+        <p class="message">Vui lòng nhập tên Todo</p>
+      </div>
       <ul class="todo_list"></ul>
     </div>
     <script src="./assets/scripts/index.js"></script>
