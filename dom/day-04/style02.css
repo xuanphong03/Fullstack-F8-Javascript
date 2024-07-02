@@ -8,6 +8,7 @@
 
 .carousel {
   position: relative;
+  overflow: hidden;
 }
 
 .carousel .carousel-inner {
@@ -44,4 +45,27 @@
 }
 .carousel .carousel-nav .next {
   right: 10px;
+}
+
+.carousel .carousel-dots-list {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.carousel .carousel-dots-list .dot-item {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.carousel .carousel-dots-list .dot-item:hover,
+.carousel .carousel-dots-list .dot-item.dot-item-active {
+  background-color: orange;
 }
