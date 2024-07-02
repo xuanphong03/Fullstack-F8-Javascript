@@ -1,125 +1,98 @@
-var prevBtn = document.querySelector(".prev-btn");
-var nextBtn = document.querySelector(".next-btn");
-var slidesList = document.querySelector(".slides-list");
-var slideWidth = slidesList.children[0].clientWidth;
-var dotBox = document.querySelector(".dot-box");
-var totalSlidesListWidth = slidesList.children.length * slideWidth;
-var totalSlide = slidesList.children.length;
-var translateX = 0;
+var carouselInner = document.querySelector(".carousel .carousel-inner");
+var prevBtn = document.querySelector(".carousel-nav .prev");
+var nextBtn = document.querySelector(".carousel-nav .next");
+var carouselDotsList = document.querySelector(".carousel-dots-list");
 
-// Tạo nút tròn chuyển hướng
-for (var i = 0; i < totalSlide; i++) {
-  dotBox.innerHTML += "<span class='dot-item'></span>";
+// Width của carousel-inner
+var itemWidth = carouselInner.clientWidth;
+var totalCarousel = carouselInner.children.length;
+var totalItemWidth = totalCarousel * itemWidth;
+var position = 0;
+var cursorClientX = null;
+var distanceMovedMouse = null;
+
+var slideTransitionMilestone = 0.3;
+
+for (var i = 0; i < totalCarousel; i++) {
+  carouselDotsList.innerHTML += `<span class="dot-item"></span>`;
 }
-var activeItem = null;
-if (dotBox.children.length) {
-  activeItem = dotBox.children[0];
-  activeItem.classList.add("active");
+carouselDotsList.children[0].classList.add("dot-item-active");
+Array.from(carouselDotsList.children).forEach(function (dotItem, index) {
+  dotItem.addEventListener("click", function () {
+    var dotActive = carouselDotsList.querySelector(".dot-item-active");
+    dotActive.classList.remove("dot-item-active");
+    this.classList.add("dot-item-active");
 
-  var dotItemsList = dotBox.querySelectorAll(".dot-item");
-  dotItemsList.forEach(function (dotItem, index) {
-    dotItem.addEventListener("click", function () {
-      activeItem.classList.remove("active");
-      activeItem = this;
-      this.classList.add("active");
-      handleNavigateByDot(index);
-    });
+    position = -(itemWidth * index);
+    carouselInner.style.translate = `${position}px`;
   });
+});
+
+function handleMoveDot() {
+  var slideIndex = Math.abs(position / itemWidth);
+  var dotActive = carouselDotsList.querySelector(".dot-item-active");
+  dotActive.classList.remove("dot-item-active");
+  carouselDotsList.children[slideIndex].classList.add("dot-item-active");
 }
 
-function handleNextSlide() {
-  if (Math.abs(translateX) >= totalSlidesListWidth - slideWidth) {
+function moveToNextSlide() {
+  if (Math.abs(position) + itemWidth >= totalItemWidth) {
     return;
   }
-  translateX -= slideWidth;
-
-  var style = {
-    transform: `translateX(${translateX}px)`,
-  };
-  Object.assign(slidesList.style, style);
-  handleChangeActiveDot();
+  position -= itemWidth;
+  carouselInner.style.translate = `${position}px`;
+  handleMoveDot();
 }
 
-function handlePrevSlide() {
-  if (Math.abs(translateX) <= 0) {
+function moveToPreviousSlide() {
+  if (Math.abs(position) === 0) {
     return;
   }
-  translateX += slideWidth;
-  var style = {
-    transform: `translateX(${translateX}px)`,
-  };
-  Object.assign(slidesList.style, style);
-  handleChangeActiveDot();
+  position += itemWidth;
+  carouselInner.style.translate = `${position}px`;
+  handleMoveDot();
 }
 
-// Chuyển slide khi bấm vào dot
-function handleNavigateByDot(slideIndex) {
-  translateX = -(slideIndex * slideWidth);
-  var style = {
-    transform: `translateX(${translateX}px)`,
-  };
-  Object.assign(slidesList.style, style);
-}
-
-// Chuyển active khi chọn nút next hoặc prev
-function handleChangeActiveDot() {
-  var slideIndex = Math.abs(translateX) / slideWidth;
-  activeItem.classList.remove("active");
-  activeItem = dotBox.children[slideIndex];
-  activeItem.classList.add("active");
-}
-
-var initialPositionMouseDown = null;
-var currentPositionMouse = null;
-var clientX = null;
-// Lướt slide bằng chuột
-function handleChangeSlideByMouse(e) {
-  currentPositionMouse = e.clientX;
-  clientX = currentPositionMouse - initialPositionMouseDown;
-  if (translateX === 0 && clientX > 0) {
+function handleDragSlide(e) {
+  var currentCursorClientX = e.clientX;
+  distanceMovedMouse = currentCursorClientX - cursorClientX;
+  if (Math.abs(position) === 0 && distanceMovedMouse > 0) {
     return;
   }
   if (
-    Math.abs(translateX) === totalSlidesListWidth - slideWidth &&
-    clientX < 0
+    Math.abs(position) + itemWidth === totalItemWidth &&
+    distanceMovedMouse < 0
   ) {
     return;
   }
-  var style = {
-    transform: `translateX(${translateX + clientX}px)`,
-  };
-  Object.assign(slidesList.style, style);
+  carouselInner.style.translate = `${position + distanceMovedMouse}px`;
 }
 
-function handleBackInitialPosition() {
-  var style = {
-    transform: `translateX(${translateX}px)`,
-  };
-  Object.assign(slidesList.style, style);
-}
-
-slidesList.addEventListener("mousedown", function (e) {
-  if (e.which === 1) {
-    initialPositionMouseDown = e.clientX;
-    slidesList.style.cursor = "all-scroll";
-    slidesList.addEventListener("mousemove", handleChangeSlideByMouse);
-  }
+carouselInner.addEventListener("mousedown", function (e) {
+  e.preventDefault();
+  cursorClientX = e.clientX;
+  this.style.cursor = "grabbing";
+  this.addEventListener("mousemove", handleDragSlide);
 });
-slidesList.addEventListener("mouseup", function (e) {
-  if (e.which === 1) {
-    slidesList.style.cursor = "default";
-    slidesList.removeEventListener("mousemove", handleChangeSlideByMouse);
-    if (clientX < 0 && Math.abs(clientX / slideWidth) >= 0.2) {
-      console.log("next");
-      handleNextSlide();
-    } else if (clientX > 0 && Math.abs(clientX / slideWidth) >= 0.2) {
-      console.log("prev");
-      handlePrevSlide();
+carouselInner.addEventListener("mouseup", function (e) {
+  e.preventDefault();
+  this.style.cursor = "default";
+  this.removeEventListener("mousemove", handleDragSlide);
+
+  console.log(Math.abs(distanceMovedMouse) / Math.abs(itemWidth));
+  if (
+    Math.abs(distanceMovedMouse) / Math.abs(itemWidth) >
+    slideTransitionMilestone
+  ) {
+    if (distanceMovedMouse > 0) {
+      moveToPreviousSlide();
     } else {
-      handleBackInitialPosition();
+      moveToNextSlide();
     }
+  } else {
+    carouselInner.style.translate = `${position}px`;
   }
 });
 
-nextBtn.addEventListener("click", handleNextSlide);
-prevBtn.addEventListener("click", handlePrevSlide);
+nextBtn.addEventListener("click", moveToNextSlide);
+prevBtn.addEventListener("click", moveToPreviousSlide);
