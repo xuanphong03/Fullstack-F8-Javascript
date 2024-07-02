@@ -99,21 +99,25 @@ function handleBackInitialPosition() {
 }
 
 slidesList.addEventListener("mousedown", function (e) {
-  initialPositionMouseDown = e.clientX;
-  slidesList.style.cursor = "all-scroll";
-  slidesList.addEventListener("mousemove", handleChangeSlideByMouse);
+  if (e.which === 1) {
+    initialPositionMouseDown = e.clientX;
+    slidesList.style.cursor = "all-scroll";
+    slidesList.addEventListener("mousemove", handleChangeSlideByMouse);
+  }
 });
-slidesList.addEventListener("mouseup", function () {
-  slidesList.style.cursor = "default";
-  slidesList.removeEventListener("mousemove", handleChangeSlideByMouse);
-  if (clientX < 0 && Math.abs(clientX / slideWidth) >= 0.2) {
-    console.log("next");
-    handleNextSlide();
-  } else if (clientX > 0 && Math.abs(clientX / slideWidth) >= 0.2) {
-    console.log("prev");
-    handlePrevSlide();
-  } else {
-    handleBackInitialPosition();
+slidesList.addEventListener("mouseup", function (e) {
+  if (e.which === 1) {
+    slidesList.style.cursor = "default";
+    slidesList.removeEventListener("mousemove", handleChangeSlideByMouse);
+    if (clientX < 0 && Math.abs(clientX / slideWidth) >= 0.2) {
+      console.log("next");
+      handleNextSlide();
+    } else if (clientX > 0 && Math.abs(clientX / slideWidth) >= 0.2) {
+      console.log("prev");
+      handlePrevSlide();
+    } else {
+      handleBackInitialPosition();
+    }
   }
 });
 
