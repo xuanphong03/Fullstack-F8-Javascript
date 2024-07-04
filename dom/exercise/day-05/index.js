@@ -5,7 +5,18 @@ var progressDot = progress.children[0];
 // Tinh width cua progress-bar
 var progressBarWidth = progressBar.clientWidth;
 
+// Code player nghe nhac
+var audio = document.querySelector("audio");
+var playerAction = document.querySelector(".player .player-action");
+var durationEl = progressBar.nextElementSibling;
+var currentTimeEl = progressBar.previousElementSibling;
+
+var initialClientX = 0;
+var initialSpace = 0;
+var dragSpace = 0;
+
 progressBar.addEventListener("mousedown", function (e) {
+  e.preventDefault();
   if (e.which === 1) {
     // Tinh width tai vi tri click
     dragSpace = e.offsetX;
@@ -22,6 +33,7 @@ progressBar.addEventListener("mousedown", function (e) {
 });
 
 progressDot.addEventListener("mousedown", function (e) {
+  e.preventDefault();
   e.stopPropagation();
   document.addEventListener("mousemove", handleDrag);
   initialClientX = e.clientX;
@@ -32,29 +44,17 @@ document.addEventListener("mouseup", function () {
   initialSpace = dragSpace;
 });
 
-var initialClientX = 0;
-var initialSpace = 0;
-var dragSpace = 0;
 var handleDrag = function (e) {
   var clientX = e.clientX;
-
   // Tinh khoang cach keo
   dragSpace = clientX - initialClientX + initialSpace;
-
   // Tinh phan tram
   var rate = (dragSpace * 100) / progressBarWidth;
-
   // Cap nhat CSS
   if (rate >= 0 && rate <= 100) {
     progress.style.width = `${rate}%`;
   }
 };
-
-// Code player nghe nhac
-var audio = document.querySelector("audio");
-var playerAction = document.querySelector(".player .player-action");
-var durationEl = progressBar.nextElementSibling;
-var currentTimeEl = progressBar.previousElementSibling;
 
 window.addEventListener("load", function () {
   var getTime = function (seconds) {
