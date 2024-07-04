@@ -1,6 +1,5 @@
 var menuList = document.querySelectorAll(".menu > li > a");
 var calcHeightSubmenu = function (element) {
-  var initialHeight = null;
   var css = {
     position: "absolute",
     top: "-5000px",
@@ -9,7 +8,7 @@ var calcHeightSubmenu = function (element) {
     height: "auto",
   };
   Object.assign(element.style, css);
-  initialHeight = element.clientHeight;
+  element.initialHeight = element.clientHeight;
   var css = {
     position: null,
     top: null,
@@ -18,7 +17,6 @@ var calcHeightSubmenu = function (element) {
     height: null,
   };
   Object.assign(element.style, css);
-  return initialHeight;
 };
 var menuActive = null;
 menuList.forEach(function (menuItem) {
@@ -30,10 +28,10 @@ menuList.forEach(function (menuItem) {
     e.preventDefault();
     var submenu = this.nextElementSibling;
     if (submenu) {
-      var initialHeight = calcHeightSubmenu(submenu);
       submenu.classList.toggle("menu-active");
+      calcHeightSubmenu(submenu);
       if (submenu.classList.contains("menu-active")) {
-        submenu.style.height = `${initialHeight}px`;
+        submenu.style.height = `${submenu.initialHeight}px`;
       } else {
         submenu.style.height = "0px";
       }

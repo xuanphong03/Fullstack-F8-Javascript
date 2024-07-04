@@ -1,0 +1,55 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+}
+
+.player {
+  width: 80%;
+  margin: 100px auto;
+}
+
+.player .player-action {
+  text-align: center;
+  cursor: pointer;
+  font-size: 2rem;
+  width: fit-content;
+  margin: 5px auto;
+  padding: 5px;
+}
+
+.player .player-timer {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.progress-bar {
+  width: 100%;
+  position: relative;
+  height: 16px;
+  background: gray;
+  cursor: pointer;
+}
+
+.progress-bar .progress {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  /* width: 200px; */
+  background: red;
+}
+
+.progress-bar .progress span {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: 50%;
+  right: 0;
+  border-radius: 50%;
+  background: blueviolet;
+  translate: 50% -50%;
+}
