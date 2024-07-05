@@ -1,7 +1,7 @@
 const progressBar = document.querySelector(".progress-bar");
 const progress = progressBar.children[0];
 const progressDot = progress.children[0];
-
+const progressReviewTimer = progressBar.children[1];
 // Tinh width cua progress-bar
 const progressBarWidth = progressBar.clientWidth;
 
@@ -46,8 +46,6 @@ document.addEventListener("mouseup", function () {
   initialSpace = dragSpace;
   if (isSeeking) {
     let rate = (initialSpace * 100) / progressBarWidth;
-    console.log("mouseup", rate);
-
     progress.style.width = `${rate}%`;
     audio.currentTime = (rate / 100) * audio.duration;
   }
@@ -65,7 +63,6 @@ const handleDrag = function (e) {
   // Cap nhat CSS
   if (rate >= 0 && rate <= 100) {
     progress.style.width = `${rate}%`;
-    console.log("mousemove", rate);
   }
 };
 
@@ -104,7 +101,6 @@ window.addEventListener("load", function () {
 
   // Xử lý sự kiện nghe hết nhạc
   audio.addEventListener("ended", function () {
-    console.log("kết thúc");
     progress.style.width = "0%";
     initialSpace = 0;
     playerAction.children[0].classList.replace("fa-pause", "fa-play");
@@ -113,23 +109,33 @@ window.addEventListener("load", function () {
 });
 
 var handleShowProgressReview = function (e) {
-  e.stopPropagation();
   var offsetX = e.offsetX;
   var rate = (offsetX * 100) / progressBarWidth;
   var timeReview = getTime((rate / 100) * audio.duration);
   if (offsetX >= 0 && offsetX <= progressBarWidth) {
-    progressBar.children[1].style.left = `${rate}%`;
-    progressBar.children[1].innerText = timeReview;
+    progressReviewTimer.style.left = `${rate}%`;
+    progressReviewTimer.innerText = timeReview;
   }
 };
 
 progressBar.addEventListener("mouseover", function (e) {
-  e.stopPropagation();
-
-  this.children[1].style.display = "block";
+  progressReviewTimer.style.display = "block";
   progressBar.addEventListener("mousemove", handleShowProgressReview);
 });
 
-progressBar.addEventListener("mouseout", function (e) {
-  this.children[1].style.display = "none";
+progressDot.addEventListener("mouseover", function (e) {
+  e.stopPropagation();
 });
+
+progressBar.addEventListener("mouseout", function (e) {
+  if (!isSeeking) {
+    progressReviewTimer.style.display = "none";
+  }
+});
+
+// document.addEventListener("mousemove", function (e) {
+//   if (isSeeking) {
+//     progressReviewTimer.style.display = "block";
+//     progressBar.addEventListener("mousemove", function (e) {});
+//   }
+// });
