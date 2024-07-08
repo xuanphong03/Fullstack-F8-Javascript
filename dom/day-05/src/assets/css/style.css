@@ -28,6 +28,19 @@
   gap: 10px;
 }
 
+.review-timer {
+  position: absolute;
+  display: block;
+  width: 40px;
+  background: #000;
+  bottom: calc(100% + 8px);
+  left: 0;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  padding: 2px;
+}
+
 .progress-bar {
   width: 100%;
   position: relative;
@@ -53,4 +66,16 @@
   border-radius: 50%;
   right: 0;
   transform: translate(50%, -50%);
+}
+
+.review-timer {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  width: 40px;
+  background: #000;
+  color: #fff;
+  display: none;
+  transform: translateX(-50%);
+  font-size: 12px;
 }
