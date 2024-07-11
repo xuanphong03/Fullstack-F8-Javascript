@@ -16,7 +16,6 @@ let cartProductSTT = 0;
 
 const ADD = "add_product";
 const REDUCE = "reduce_product";
-const REMOVE = "remove_product";
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let isEmptyCart = cart.length === 0;
@@ -168,21 +167,14 @@ const updateCart = function (quantity, price, action) {
       totalCartProductQuantity -= quantity;
       totalCartProductCost -= price;
       break;
-    case REMOVE:
-      totalCartProductQuantity -= quantity;
-      totalCartProductCost -= price;
-      if (!totalCartProductQuantity && !isEmptyCart) {
-        handleRemoveCartList();
-        isEmptyCart = true;
-        return;
-      }
-      console.log({
-        totalCartProductCost,
-        totalCartProductQuantity,
-      });
-      break;
     default:
-      console.log("Lỗi");
+      throw new Error("Action không hợp lệ...");
+  }
+
+  if (!totalCartProductQuantity && !isEmptyCart) {
+    handleRemoveCartList();
+    isEmptyCart = true;
+    return;
   }
 
   const totalRow = root.querySelector(".cart-list tfoot");
@@ -207,6 +199,12 @@ const addProductToCart = function (e) {
   let productQuantity = +productQuantityEl.value;
   if (isNaN(productPrice) || isNaN(productQuantity)) return;
   let totalCost = productPrice * productQuantity;
+
+  if (productQuantity <= 0) {
+    alert("Số lượng không sản phẩm không được nhỏ hơn 0");
+    productQuantityEl.value = 1;
+    return;
+  }
 
   // Kiểm tra sản phẩm đã có trong giỏ hàng hay chưa ?
   // Nếu có thì thay đổi số lượng, giá, thành tiền
@@ -237,7 +235,7 @@ const addProductToCart = function (e) {
         productQuantity: newQuantity,
         productPrice,
       };
-      console.log(cart);
+
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   } else {
@@ -296,7 +294,7 @@ const addProductToCart = function (e) {
     );
     utils.render(tbodyCartListEl, newCartProduct);
     updateCart(productQuantity, totalCost, ADD);
-    handleUpdateSTT();
+    handleUpdateOrderNumber();
 
     // Save Data
     cart.push({
@@ -327,9 +325,9 @@ const removeCartProduct = function () {
   let productPrice = +productPriceEl.innerText;
   let productQuantity = +productQuantityEl.value;
 
-  updateCart(productQuantity, productPrice, REMOVE);
+  updateCart(productQuantity, productPrice, REDUCE);
   tbodyCartListEl.removeChild(productItemEl);
-  handleUpdateSTT();
+  handleUpdateOrderNumber();
 
   // Local storage
   cart = cart.filter((item) => item.productId !== productId);
@@ -356,7 +354,7 @@ const removeAllCartProduct = function () {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
 
-const handleUpdateSTT = function () {
+const handleUpdateOrderNumber = function () {
   const tbodyEl = root.querySelectorAll(".cart-list tbody tr");
   tbodyEl.forEach((cartProductItem, stt) => {
     const productSTTEl = cartProductItem.querySelector(".productSTT");
@@ -365,36 +363,51 @@ const handleUpdateSTT = function () {
 };
 
 const handleUpdateAllCartProduct = function () {
-  const tbodyEl = root.querySelectorAll(".cart-list tbody tr");
-  tbodyEl.forEach((cartProductItem, index) => {
+  const tbodyEl = root.querySelector(".cart-list tbody");
+  const rows = tbodyEl.querySelectorAll("tr");
+  rows.forEach((cartProductItem, index) => {
     const unitPriceEl = cartProductItem.querySelector(".product-price");
     const quantityEl = cartProductItem.querySelector(".product-quantity");
     const totalCostEl = cartProductItem.querySelector(".product-total-cost");
+    let productId = cartProductItem.dataset.id;
     let unitPrice = +unitPriceEl.innerText;
     let quantity = +quantityEl.value;
     let newTotalCost = unitPrice * quantity;
 
-    let changedQuantity = Math.abs(
-      +totalCostEl.innerText / unitPrice - quantity
-    );
-    let changedTotalCost = Math.abs(+totalCostEl.innerText - newTotalCost);
+    // Nếu sản phẩm = 0 ===> Xóa sản phẩm
 
-    if (+totalCostEl.innerText < newTotalCost) {
-      updateCart(changedQuantity, changedTotalCost, ADD);
+    if (quantity <= 0) {
+      tbodyEl.removeChild(cartProductItem);
+      let prevQuantity = cart[index]?.productQuantity;
+      let prevTotalPrice = prevQuantity * unitPrice;
+      updateCart(prevQuantity, prevTotalPrice, REDUCE);
+      cart = cart.filter((item) => item.productId !== productId);
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } else {
+      let changedQuantity = Math.abs(
+        +totalCostEl.innerText / unitPrice - quantity
+      );
+      let changedTotalCost = Math.abs(+totalCostEl.innerText - newTotalCost);
+
+      if (+totalCostEl.innerText < newTotalCost) {
+        updateCart(changedQuantity, changedTotalCost, ADD);
+      }
+      if (+totalCostEl.innerText > newTotalCost) {
+        updateCart(changedQuantity, changedTotalCost, REDUCE);
+      }
+
+      totalCostEl.innerText = newTotalCost;
+
+      let position = cart.map((item) => item.productId).indexOf(productId);
+      cart[position] = {
+        ...cart[position],
+        productQuantity: quantity,
+      };
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
-    if (+totalCostEl.innerText > newTotalCost) {
-      updateCart(changedQuantity, changedTotalCost, REDUCE);
-    }
-
-    totalCostEl.innerText = newTotalCost;
-
-    cart[index] = {
-      ...cart[index],
-      productQuantity: quantity,
-    };
-    localStorage.setItem("cart", JSON.stringify(cart));
+    console.log(cart);
   });
-  handleUpdateSTT();
+  handleUpdateOrderNumber();
 
   alert("Cập nhật giỏ hàng thành công!");
 };
