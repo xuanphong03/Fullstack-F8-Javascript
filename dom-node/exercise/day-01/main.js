@@ -18,8 +18,7 @@ const REDUCE = "reduce_product";
 const REMOVE = "remove_product";
 
 const CART_DATA = JSON.parse(localStorage.getItem("cart")) || [];
-// let isEmptyCart = CART_DATA.length === 0;
-let isEmptyCart = true;
+let isEmptyCart = CART_DATA.length === 0;
 
 const handleShowCartList = function () {
   const emptyMessage = root.querySelector(".cart-heading");
@@ -88,11 +87,59 @@ const handleShowCartList = function () {
   );
   utils.render(root, cartList);
 
-  // const tbodyEl = cartList.querySelector("tbody");
-  // CART_DATA.forEach(function (item, index) {
-  //   const { productId, productQuantity, productName, totalCost } = item;
-  //   console.log(item);
-  // });
+  const tbodyEl = cartList.querySelector("tbody");
+  CART_DATA.forEach(function (item, index) {
+    const { productId, productQuantity, productName, productPrice } = item;
+    const row = utils.createElement(
+      "tr",
+      { className: "product-item", "data-id": `${productId}` },
+      utils.createElement(
+        "td",
+        { className: "productSTT" },
+        `${++cartProductSTT}`
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-name" },
+        `${productName}`
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-price" },
+        `${productPrice}`
+      ),
+      utils.createElement(
+        "td",
+        {},
+        utils.createElement("input", {
+          type: "number",
+          value: `${productQuantity}`,
+          min: "1",
+          className: "product-quantity",
+        })
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-total-cost" },
+        `${productPrice * productQuantity}`
+      ),
+      utils.createElement(
+        "td",
+        {},
+        utils.createElement(
+          "button",
+          {
+            className: "remove-btn",
+            "data-id": `${productId}`,
+            onClick: removeCartProduct,
+          },
+          "Xóa"
+        )
+      )
+    );
+    utils.render(tbodyEl, row);
+    updateCart(productQuantity, productPrice * productQuantity, ADD);
+  });
 };
 
 const handleRemoveCartList = function () {
@@ -176,12 +223,21 @@ const addProductToCart = function (e) {
     let cartProductQuantity =
       +cartProductQuantityEl.innerText + productQuantity;
     let cartProductTotalCost = +cartProductTotalCostEl.innerText + totalCost;
+    let newQuantity = +cartProductQuantityEl.value + cartProductQuantity;
+    cartProductQuantityEl.value = newQuantity;
 
-    cartProductQuantityEl.value =
-      +cartProductQuantityEl.value + cartProductQuantity;
     cartProductTotalCostEl.innerText = cartProductTotalCost;
 
     updateCart(productQuantity, totalCost, ADD);
+    const position = CART_DATA.map((item) => item.productId).indexOf(productId);
+    if (position !== -1) {
+      CART_DATA[position] = {
+        ...CART_DATA[position],
+        productQuantity: newQuantity,
+        productPrice,
+      };
+      localStorage.setItem("cart", JSON.stringify(CART_DATA));
+    }
   } else {
     if (isEmptyCart) {
       handleShowCartList();
@@ -245,7 +301,7 @@ const addProductToCart = function (e) {
       productId,
       productQuantity,
       productName,
-      totalCost,
+      productPrice,
     });
     localStorage.setItem("cart", JSON.stringify(CART_DATA));
   }
@@ -270,6 +326,12 @@ const removeCartProduct = function () {
   updateCart(productQuantity, productPrice, REMOVE);
   tbodyCartListEl.removeChild(productItemEl);
   handleUpdateSTT();
+
+  // Local storage
+  const newCartProductList = CART_DATA.filter(
+    (item) => item.productId !== productId
+  );
+  localStorage.setItem("cart", JSON.stringify(newCartProductList));
 };
 
 const removeAllCartProduct = function () {
@@ -280,6 +342,7 @@ const removeAllCartProduct = function () {
     handleRemoveCartList();
     isEmptyCart = true;
   }
+  localStorage.setItem("cart", JSON.stringify([]));
 };
 
 const handleUpdateSTT = function () {
@@ -292,7 +355,7 @@ const handleUpdateSTT = function () {
 
 const handleUpdateAllCartProduct = function () {
   const tbodyEl = root.querySelectorAll(".cart-list tbody tr");
-  tbodyEl.forEach((cartProductItem, stt) => {
+  tbodyEl.forEach((cartProductItem, index) => {
     const unitPriceEl = cartProductItem.querySelector(".product-price");
     const quantityEl = cartProductItem.querySelector(".product-quantity");
     const totalCostEl = cartProductItem.querySelector(".product-total-cost");
@@ -313,124 +376,95 @@ const handleUpdateAllCartProduct = function () {
     }
 
     totalCostEl.innerText = newTotalCost;
+
+    CART_DATA[index] = {
+      ...CART_DATA[index],
+      productQuantity: quantity,
+    };
+    localStorage.setItem("cart", JSON.stringify(CART_DATA));
   });
   handleUpdateSTT();
+
   alert("Cập nhật giỏ hàng thành công!");
 };
 
-const productList = utils.createElement(
-  "table",
-  { className: "product-list" },
-  utils.createElement(
-    "thead",
-    {},
-    utils.createElement(
-      "tr",
+// Render Danh sách sản phẩm
+(() => {
+  const tableEl = utils.createElement("table", { className: "product-list" });
+  const theadEl = utils.createElement("thead");
+  const trEl = utils.createElement("tr");
+  utils.render(tableEl, theadEl);
+  utils.render(theadEl, trEl);
+  ["STT", "Tên sản phẩm", "Giá", "Thêm giỏ hàng"].forEach((label) => {
+    const thEl = utils.createElement("th", {}, label);
+    utils.render(trEl, thEl);
+  });
+
+  const productList = [
+    {
+      id: 1,
+      name: "Sản phẩm 1",
+      price: 1000,
+    },
+    {
+      id: 2,
+      name: "Sản phẩm 2",
+      price: 2000,
+    },
+    {
+      id: 3,
+      name: "Sản phẩm 3",
+      price: 3000,
+    },
+    {
+      id: 4,
+      name: "Sản phẩm 4",
+      price: 4000,
+    },
+  ];
+  const tbodyEl = utils.createElement("tbody");
+  utils.render(tableEl, tbodyEl);
+  productList.forEach((product, index) => {
+    const { id, name, price } = product;
+    const trEl = utils.createElement("tr", {
+      className: "product-item",
+      "data-id": id,
+    });
+    const tdCountEl = utils.createElement("td", {}, ++index);
+    const tdProductNameEl = utils.createElement(
+      "td",
+      { className: "product-name" },
+      name
+    );
+    const tdProductPrice = utils.createElement(
+      "td",
+      { className: "product-price" },
+      price
+    );
+    const tdActionsEl = utils.createElement(
+      "td",
       {},
-      utils.createElement("th", {}, "STT"),
-      utils.createElement("th", {}, "Tên sản phẩm"),
-      utils.createElement("th", {}, "Giá"),
-      utils.createElement("th", {}, "Thêm vào giỏ hàng")
-    )
-  ),
-  utils.createElement(
-    "tbody",
-    {},
-    utils.createElement(
-      "tr",
-      { className: "product-item", "data-id": 1 },
-      utils.createElement("td", {}, "1"),
-      utils.createElement("td", { className: "product-name" }, "Sản phẩm 1"),
-      utils.createElement("td", { className: "product-price" }, "1000"),
+      utils.createElement("input", {
+        type: "number",
+        value: 1,
+        min: "1",
+        className: "product-quantity",
+      }),
+      utils.createElement("br"),
       utils.createElement(
-        "td",
-        {},
-        utils.createElement("input", {
-          type: "number",
-          value: 1,
-          min: "1",
-          className: "product-quantity",
-        }),
-        utils.createElement("br"),
-        utils.createElement(
-          "button",
-          { className: "add-btn", onClick: addProductToCart, "data-id": 1 },
-          "Thêm vào giỏ hàng"
-        )
+        "button",
+        { className: "add-btn", onClick: addProductToCart, "data-id": id },
+        "Thêm vào giỏ hàng"
       )
-    ),
-    utils.createElement(
-      "tr",
-      { className: "product-item", "data-id": 2 },
-      utils.createElement("td", {}, "2"),
-      utils.createElement("td", { className: "product-name" }, "Sản phẩm 2"),
-      utils.createElement("td", { className: "product-price" }, "2000"),
-      utils.createElement(
-        "td",
-        {},
-        utils.createElement("input", {
-          type: "number",
-          value: 1,
-          min: "1",
-          className: "product-quantity",
-        }),
-        utils.createElement("br"),
-        utils.createElement(
-          "button",
-          { className: "add-btn", onClick: addProductToCart, "data-id": 2 },
-          "Thêm vào giỏ hàng"
-        )
-      )
-    ),
-    utils.createElement(
-      "tr",
-      { className: "product-item", "data-id": 3 },
-      utils.createElement("td", {}, "3"),
-      utils.createElement("td", { className: "product-name" }, "Sản phẩm 3"),
-      utils.createElement("td", { className: "product-price" }, "3000"),
-      utils.createElement(
-        "td",
-        {},
-        utils.createElement("input", {
-          type: "number",
-          value: 1,
-          min: "1",
-          className: "product-quantity",
-        }),
-        utils.createElement("br"),
-        utils.createElement(
-          "button",
-          { className: "add-btn", onClick: addProductToCart, "data-id": 3 },
-          "Thêm vào giỏ hàng"
-        )
-      )
-    ),
-    utils.createElement(
-      "tr",
-      { className: "product-item", "data-id": 4 },
-      utils.createElement("td", {}, "4"),
-      utils.createElement("td", { className: "product-name" }, "Sản phẩm 4"),
-      utils.createElement("td", { className: "product-price" }, "4000"),
-      utils.createElement(
-        "td",
-        {},
-        utils.createElement("input", {
-          type: "number",
-          value: 1,
-          min: "1",
-          className: "product-quantity",
-        }),
-        utils.createElement("br"),
-        utils.createElement(
-          "button",
-          { className: "add-btn", onClick: addProductToCart, "data-id": 4 },
-          "Thêm vào giỏ hàng"
-        )
-      )
-    )
-  )
-);
-utils.render(root, productList);
+    );
+    utils.render(trEl, tdCountEl);
+    utils.render(trEl, tdProductNameEl);
+    utils.render(trEl, tdProductPrice);
+    utils.render(trEl, tdActionsEl);
+    utils.render(tbodyEl, trEl);
+  });
+  utils.render(root, tableEl);
+})();
 
 const cartHeading = utils.createElement(
   "h2",
@@ -453,5 +487,5 @@ if (isEmptyCart) {
 
   utils.render(root, emptyEl);
 } else {
-  // handleShowCartList();
+  handleShowCartList();
 }
