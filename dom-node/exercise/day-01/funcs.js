@@ -1,0 +1,370 @@
+import { ADD, REDUCE, REMOVE, CART_DATA } from "./constants.js";
+
+let totalCartProductQuantity = 0;
+let totalCartProductCost = 0;
+let cartProductSTT = 0;
+
+export const handleShowCartList = function () {
+  const emptyMessage = root.querySelector(".cart-heading");
+  if (emptyMessage.nextElementSibling) {
+    root.removeChild(emptyMessage.nextElementSibling);
+  }
+
+  const cartList = utils.createElement(
+    "div",
+    {},
+    utils.createElement(
+      "table",
+      { className: "cart-list" },
+      utils.createElement(
+        "thead",
+        {},
+        utils.createElement(
+          "tr",
+          {},
+          utils.createElement("th", {}, "STT"),
+          utils.createElement("th", {}, "Tên sản phẩm"),
+          utils.createElement("th", {}, "Giá"),
+          utils.createElement("th", {}, "Số lượng"),
+          utils.createElement("th", {}, "Thành tiền"),
+          utils.createElement("th", {}, "Thêm vào giỏ hàng")
+        )
+      ),
+
+      utils.createElement("tbody"),
+
+      utils.createElement(
+        "tfoot",
+        {},
+        utils.createElement(
+          "tr",
+          {},
+          utils.createElement("td", {}, "Tổng"),
+          utils.createElement(
+            "td",
+            { className: "total-quantity" },
+            `${totalCartProductQuantity}`
+          ),
+          utils.createElement(
+            "td",
+            { className: "total-cost" },
+            `${totalCartProductCost}`
+          )
+        )
+      )
+    ),
+    utils.createElement("hr"),
+    utils.createElement(
+      "div",
+      {},
+      utils.createElement(
+        "button",
+        { className: "update-cart-btn", onClick: handleUpdateAllCartProduct },
+        "Cập nhật giỏ hàng"
+      ),
+      utils.createElement(
+        "button",
+        { className: "remove-cart-btn", onClick: removeAllCartProduct },
+        "Xóa giỏ hàng"
+      )
+    )
+  );
+  utils.render(root, cartList);
+
+  const tbodyEl = cartList.querySelector("tbody");
+  CART_DATA.forEach(function (item, index) {
+    const { productId, productQuantity, productName, productPrice } = item;
+    const row = utils.createElement(
+      "tr",
+      { className: "product-item", "data-id": `${productId}` },
+      utils.createElement(
+        "td",
+        { className: "productSTT" },
+        `${++cartProductSTT}`
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-name" },
+        `${productName}`
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-price" },
+        `${productPrice}`
+      ),
+      utils.createElement(
+        "td",
+        {},
+        utils.createElement("input", {
+          type: "number",
+          value: `${productQuantity}`,
+          min: "1",
+          className: "product-quantity",
+        })
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-total-cost" },
+        `${productPrice * productQuantity}`
+      ),
+      utils.createElement(
+        "td",
+        {},
+        utils.createElement(
+          "button",
+          {
+            className: "remove-btn",
+            "data-id": `${productId}`,
+            onClick: removeCartProduct,
+          },
+          "Xóa"
+        )
+      )
+    );
+    utils.render(tbodyEl, row);
+    updateCart(productQuantity, productPrice * productQuantity, ADD);
+  });
+};
+
+export const handleRemoveCartList = function () {
+  const cartHeading = root.querySelector(".cart-heading");
+  root.removeChild(cartHeading.nextElementSibling);
+
+  const emptyEl = utils.createElement(
+    "p",
+    {
+      className: "",
+    },
+    "Giỏ hàng không có sản phẩm"
+  );
+
+  utils.render(root, emptyEl);
+};
+
+export const updateCart = function (quantity, price, action) {
+  switch (action) {
+    case ADD:
+      totalCartProductQuantity += quantity;
+      totalCartProductCost += price;
+      break;
+    case REDUCE:
+      totalCartProductQuantity -= quantity;
+      totalCartProductCost -= price;
+      break;
+    case REMOVE:
+      totalCartProductQuantity -= quantity;
+      totalCartProductCost -= price;
+      if (!totalCartProductQuantity && !isEmptyCart) {
+        handleRemoveCartList();
+        isEmptyCart = true;
+        return;
+      }
+
+      break;
+    default:
+      console.log("Lỗi");
+  }
+
+  const totalRow = root.querySelector(".cart-list tfoot");
+  const totalCostEl = totalRow.querySelector(".total-cost");
+  const totalQuantityEl = totalRow.querySelector(".total-quantity");
+
+  totalCostEl.innerText = totalCartProductCost;
+  totalQuantityEl.innerText = totalCartProductQuantity;
+};
+
+export const addProductToCart = function (e) {
+  const productId = this.dataset.id;
+  const productItemEl = root.querySelector(
+    `.product-list tr[data-id='${productId}']`
+  );
+  const productNameEl = productItemEl.querySelector(".product-name");
+  const productPriceEl = productItemEl.querySelector(".product-price");
+  const productQuantityEl = productItemEl.querySelector(".product-quantity");
+
+  let productName = productNameEl.innerText;
+  let productPrice = +productPriceEl.innerText;
+  let productQuantity = +productQuantityEl.value;
+  if (isNaN(productPrice) || isNaN(productQuantity)) return;
+  let totalCost = productPrice * productQuantity;
+
+  // Kiểm tra sản phẩm đã có trong giỏ hàng hay chưa ?
+  // Nếu có thì thay đổi số lượng, giá, thành tiền
+  // Nếu chưa có thì thêm mới
+  const cartProduct = root.querySelector(
+    `.cart-list tr[data-id='${productId}']`
+  );
+  if (cartProduct) {
+    const cartProductQuantityEl =
+      cartProduct.querySelector(".product-quantity");
+    const cartProductTotalCostEl = cartProduct.querySelector(
+      ".product-total-cost"
+    );
+
+    let cartProductQuantity =
+      +cartProductQuantityEl.innerText + productQuantity;
+    let cartProductTotalCost = +cartProductTotalCostEl.innerText + totalCost;
+    let newQuantity = +cartProductQuantityEl.value + cartProductQuantity;
+    cartProductQuantityEl.value = newQuantity;
+
+    cartProductTotalCostEl.innerText = cartProductTotalCost;
+
+    updateCart(productQuantity, totalCost, ADD);
+    const position = CART_DATA.map((item) => item.productId).indexOf(productId);
+    if (position !== -1) {
+      CART_DATA[position] = {
+        ...CART_DATA[position],
+        productQuantity: newQuantity,
+        productPrice,
+      };
+      localStorage.setItem("cart", JSON.stringify(CART_DATA));
+    }
+  } else {
+    if (isEmptyCart) {
+      handleShowCartList();
+      isEmptyCart = false;
+    }
+
+    const tbodyCartListEl = root.querySelector(".cart-list tbody");
+    const newCartProduct = utils.createElement(
+      "tr",
+      { className: "product-item", "data-id": `${productId}` },
+      utils.createElement(
+        "td",
+        { className: "productSTT" },
+        `${++cartProductSTT}`
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-name" },
+        `${productName}`
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-price" },
+        `${productPrice}`
+      ),
+      utils.createElement(
+        "td",
+        {},
+        utils.createElement("input", {
+          type: "number",
+          value: `${productQuantity}`,
+          min: "1",
+          className: "product-quantity",
+        })
+      ),
+      utils.createElement(
+        "td",
+        { className: "product-total-cost" },
+        `${totalCost}`
+      ),
+      utils.createElement(
+        "td",
+        {},
+        utils.createElement(
+          "button",
+          {
+            className: "remove-btn",
+            "data-id": `${productId}`,
+            onClick: removeCartProduct,
+          },
+          "Xóa"
+        )
+      )
+    );
+    utils.render(tbodyCartListEl, newCartProduct);
+    updateCart(productQuantity, totalCost, ADD);
+    handleUpdateSTT();
+
+    // Save Data
+    CART_DATA.push({
+      productId,
+      productQuantity,
+      productName,
+      productPrice,
+    });
+    localStorage.setItem("cart", JSON.stringify(CART_DATA));
+  }
+};
+
+export const removeCartProduct = function () {
+  if (!confirm("Are you sure?")) {
+    return;
+  }
+  const tbodyCartListEl = root.querySelector(".cart-list tbody");
+  const productId = this.dataset.id;
+
+  const productItemEl = tbodyCartListEl.querySelector(
+    `tr[data-id='${productId}']`
+  );
+  const productPriceEl = productItemEl.querySelector(".product-total-cost");
+  const productQuantityEl = productItemEl.querySelector(".product-quantity");
+
+  let productPrice = +productPriceEl.innerText;
+  let productQuantity = +productQuantityEl.value;
+
+  updateCart(productQuantity, productPrice, REMOVE);
+  tbodyCartListEl.removeChild(productItemEl);
+  handleUpdateSTT();
+
+  // Local storage
+  const newCartProductList = CART_DATA.filter(
+    (item) => item.productId !== productId
+  );
+  localStorage.setItem("cart", JSON.stringify(newCartProductList));
+};
+
+const removeAllCartProduct = function () {
+  if (!confirm("Bạn muốn chắc chắn muốn xóa giỏ hàng chứ?")) return;
+  totalCartProductCost = 0;
+  totalCartProductQuantity = 0;
+  if (!isEmptyCart) {
+    handleRemoveCartList();
+    isEmptyCart = true;
+  }
+  localStorage.setItem("cart", JSON.stringify([]));
+};
+
+const handleUpdateSTT = function () {
+  const tbodyEl = root.querySelectorAll(".cart-list tbody tr");
+  tbodyEl.forEach((cartProductItem, stt) => {
+    const productSTTEl = cartProductItem.querySelector(".productSTT");
+    productSTTEl.innerText = ++stt;
+  });
+};
+
+export const handleUpdateAllCartProduct = function () {
+  const tbodyEl = root.querySelectorAll(".cart-list tbody tr");
+  tbodyEl.forEach((cartProductItem, index) => {
+    const unitPriceEl = cartProductItem.querySelector(".product-price");
+    const quantityEl = cartProductItem.querySelector(".product-quantity");
+    const totalCostEl = cartProductItem.querySelector(".product-total-cost");
+    let unitPrice = +unitPriceEl.innerText;
+    let quantity = +quantityEl.value;
+    let newTotalCost = unitPrice * quantity;
+
+    let changedQuantity = Math.abs(
+      +totalCostEl.innerText / unitPrice - quantity
+    );
+    let changedTotalCost = Math.abs(+totalCostEl.innerText - newTotalCost);
+
+    if (+totalCostEl.innerText < newTotalCost) {
+      updateCart(changedQuantity, changedTotalCost, ADD);
+    }
+    if (+totalCostEl.innerText > newTotalCost) {
+      updateCart(changedQuantity, changedTotalCost, REDUCE);
+    }
+
+    totalCostEl.innerText = newTotalCost;
+
+    CART_DATA[index] = {
+      ...CART_DATA[index],
+      productQuantity: quantity,
+    };
+    localStorage.setItem("cart", JSON.stringify(CART_DATA));
+  });
+  handleUpdateSTT();
+
+  alert("Cập nhật giỏ hàng thành công!");
+};
