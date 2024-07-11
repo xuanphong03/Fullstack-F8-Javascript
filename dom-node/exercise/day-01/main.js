@@ -224,6 +224,13 @@ const addProductToCart = function (e) {
     `.cart-list tr[data-id='${productId}']`
   );
   if (cartProduct) {
+    const prevTotalQuantity =
+      cartProduct.querySelector(".product-quantity").value;
+    if (productQuantity + prevTotalQuantity > 99999) {
+      alert("Tổng số lượng của 1 loại sản phẩm không được quá 99999");
+      return;
+    }
+
     const cartProductQuantityEl =
       cartProduct.querySelector(".product-quantity");
     const cartProductTotalCostEl = cartProduct.querySelector(
@@ -398,7 +405,7 @@ const handleUpdateAllCartProduct = function () {
     } else {
       // Nếu  productQuantity được thêm vào <= 99999 và tổng số lượng productQuantity <= 1000000
       // thì mới cộng thêm thêm quantity. Ngược lại +1
-      if (quantity <= 99999 && cart[position].productQuantity <= 1000000) {
+      if (quantity <= 99999) {
         let changedQuantity = Math.abs(
           +totalCostEl.innerText / unitPrice - quantity
         );
@@ -413,6 +420,20 @@ const handleUpdateAllCartProduct = function () {
         };
         localStorage.setItem("cart", JSON.stringify(cart));
       } else {
+        let changedQuantity = prevQuantity - 1;
+        let changedTotalCost = changedQuantity * unitPrice;
+        console.log({
+          changedQuantity,
+          changedTotalCost,
+        });
+        updateCart(changedQuantity, changedTotalCost, REDUCE);
+        quantityEl.value = 1;
+        totalCostEl.innerText = unitPrice;
+        cart[position] = {
+          ...cart[position],
+          productQuantity: 1,
+        };
+        localStorage.setItem("cart", JSON.stringify(cart));
       }
     }
   });
