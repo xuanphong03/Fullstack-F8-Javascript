@@ -228,6 +228,7 @@ const addProductToCart = function (e) {
       cartProduct.querySelector(".product-quantity").value;
     if (productQuantity + prevTotalQuantity > 99999) {
       alert("Tổng số lượng của 1 loại sản phẩm không được quá 99999");
+      productQuantityEl.value = 1;
       return;
     }
 
@@ -259,6 +260,7 @@ const addProductToCart = function (e) {
   } else {
     if (productQuantity > 99999) {
       alert("Số lượng sản phẩm không được quá 999999");
+      productQuantityEl.value = 1;
       return;
     }
     if (isEmptyCart) {
