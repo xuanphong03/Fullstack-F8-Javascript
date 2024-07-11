@@ -310,10 +310,12 @@ const addProductToCart = function (e) {
 };
 
 const removeCartProduct = function () {
-  if (!confirm("Are you sure?")) {
+  if (!confirm("Bạn chắc chắn muốn xóa?")) {
     return;
   }
-  const tbodyCartListEl = root.querySelector(".cart-list tbody");
+  alert("Xóa thành công");
+  const cartList = root.querySelector(".cart-list");
+  const tbodyCartListEl = cartList.querySelector("tbody");
   const productId = this.dataset.id;
 
   const productItemEl = tbodyCartListEl.querySelector(
@@ -332,6 +334,14 @@ const removeCartProduct = function () {
   // Local storage
   cart = cart.filter((item) => item.productId !== productId);
   localStorage.setItem("cart", JSON.stringify(cart));
+
+  // reset lại số lượng ban nhau của các sản phẩm khác được thay đổi nhưng chưa update
+  Array.from(tbodyCartListEl.querySelectorAll("tr")).forEach(
+    (cartItem, index) => {
+      const cartItemQuantityEl = cartItem.querySelector(".product-quantity");
+      cartItemQuantityEl.value = cart[index]?.productQuantity;
+    }
+  );
 };
 
 const removeAllCartProduct = function () {
@@ -390,7 +400,7 @@ const handleUpdateAllCartProduct = function () {
 };
 
 // Render Danh sách sản phẩm
-(() => {
+const renderCartList = () => {
   const tableEl = utils.createElement("table", { className: "product-list" });
   const theadEl = utils.createElement("thead");
   const trEl = utils.createElement("tr");
@@ -464,7 +474,9 @@ const handleUpdateAllCartProduct = function () {
     utils.render(tbodyEl, trEl);
   });
   utils.render(root, tableEl);
-})();
+};
+renderCartList();
+
 const cartHeading = utils.createElement(
   "h2",
   {
