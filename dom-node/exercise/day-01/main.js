@@ -257,6 +257,10 @@ const addProductToCart = function (e) {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   } else {
+    if (productQuantity > 99999) {
+      alert("Số lượng sản phẩm không được quá 999999");
+      return;
+    }
     if (isEmptyCart) {
       handleShowCartList();
       isEmptyCart = false;
