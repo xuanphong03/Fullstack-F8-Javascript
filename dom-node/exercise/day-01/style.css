@@ -4,12 +4,11 @@
   box-sizing: border-box;
 }
 
-h2 {
-}
-
 table {
   width: 95%;
-  margin: 50px auto;
+  margin-inline: auto;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 table thead th:nth-child(1) {
   width: 5%;
@@ -35,12 +34,12 @@ th {
   border: 1px solid #000;
 }
 
-input,
-button {
+input {
   width: 100%;
 }
 
 button {
   cursor: pointer;
   margin-top: 5px;
+  margin-inline: 10px;
 }
