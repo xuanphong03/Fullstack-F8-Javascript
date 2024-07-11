@@ -206,6 +206,17 @@ const addProductToCart = function (e) {
     return;
   }
 
+  // reset lại số lượng ban nhau của các sản phẩm khác được thay đổi nhưng chưa update
+  if (totalCartProductQuantity > 0) {
+    const tbodyCartListEl = root.querySelector(".cart-list tbody");
+    Array.from(tbodyCartListEl.querySelectorAll("tr")).forEach(
+      (cartItem, index) => {
+        const cartItemQuantityEl = cartItem.querySelector(".product-quantity");
+        cartItemQuantityEl.value = cart[index]?.productQuantity;
+      }
+    );
+  }
+
   // Kiểm tra sản phẩm đã có trong giỏ hàng hay chưa ?
   // Nếu có thì thay đổi số lượng, giá, thành tiền
   // Nếu chưa có thì thêm mới
@@ -374,41 +385,40 @@ const handleUpdateAllCartProduct = function () {
     let quantity = +quantityEl.value;
     let newTotalCost = unitPrice * quantity;
 
+    // Lấy vị trí của sản phẩm ở trong cart trên local storage
+    let position = cart.map((item) => item.productId).indexOf(productId);
     // Nếu sản phẩm = 0 ===> Xóa sản phẩm
-
+    let prevQuantity = cart[position]?.productQuantity;
+    let prevTotalPrice = prevQuantity * unitPrice;
     if (quantity <= 0) {
       tbodyEl.removeChild(cartProductItem);
-      let prevQuantity = cart[index]?.productQuantity;
-      let prevTotalPrice = prevQuantity * unitPrice;
       updateCart(prevQuantity, prevTotalPrice, REDUCE);
       cart = cart.filter((item) => item.productId !== productId);
       localStorage.setItem("cart", JSON.stringify(cart));
     } else {
-      let changedQuantity = Math.abs(
-        +totalCostEl.innerText / unitPrice - quantity
-      );
-      let changedTotalCost = Math.abs(+totalCostEl.innerText - newTotalCost);
+      // Nếu  productQuantity được thêm vào <= 99999 và tổng số lượng productQuantity <= 1000000
+      // thì mới cộng thêm thêm quantity. Ngược lại +1
+      if (quantity <= 99999 && cart[position].productQuantity <= 1000000) {
+        let changedQuantity = Math.abs(
+          +totalCostEl.innerText / unitPrice - quantity
+        );
+        let changedTotalCost = Math.abs(+totalCostEl.innerText - newTotalCost);
+        const ACTION = +totalCostEl.innerText <= newTotalCost ? ADD : REDUCE;
+        updateCart(changedQuantity, changedTotalCost, ACTION);
 
-      if (+totalCostEl.innerText < newTotalCost) {
-        updateCart(changedQuantity, changedTotalCost, ADD);
+        totalCostEl.innerText = newTotalCost;
+        cart[position] = {
+          ...cart[position],
+          productQuantity: quantity,
+        };
+        localStorage.setItem("cart", JSON.stringify(cart));
+      } else {
       }
-      if (+totalCostEl.innerText > newTotalCost) {
-        updateCart(changedQuantity, changedTotalCost, REDUCE);
-      }
-
-      totalCostEl.innerText = newTotalCost;
-
-      let position = cart.map((item) => item.productId).indexOf(productId);
-      cart[position] = {
-        ...cart[position],
-        productQuantity: quantity,
-      };
-      localStorage.setItem("cart", JSON.stringify(cart));
     }
-    console.log(cart);
   });
+  // Cập nhật lại số thứ tự
   handleUpdateOrderNumber();
-
+  // Thông báo thành công :<
   alert("Cập nhật giỏ hàng thành công!");
 };
 
