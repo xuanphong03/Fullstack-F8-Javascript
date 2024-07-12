@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: 0;
+  border: 0;
+}
+
+header {
+  height: 80px;
+  background: yellow;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  gap: 10px;
+}
+
+.nav-list li button {
+  display: block;
+  padding: 10px 20px;
+  border: 1px solid #000;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.nav-list li.active button {
+  color: red;
+}
+
+main {
+  margin-top: 80px;
+}
+
+main section {
+  height: calc(100vh - 80px);
+}
+
+main section h2 {
+  padding-top: 20px;
+}
