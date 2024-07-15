@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+}
+
+.player {
+  width: 80%;
+  margin: 30px auto;
+}
+
+.player .play-action {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.player .play-action i {
+  cursor: pointer;
+}
+
+.player .play-timer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-timer {
+  position: absolute;
+  display: block;
+  width: 40px;
+  background: #000;
+  bottom: calc(100% + 8px);
+  left: 0;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  padding: 2px;
+}
+
+.progress-bar {
+  width: 100%;
+  position: relative;
+  height: 10px;
+  background: gray;
+  cursor: pointer;
+}
+.progress-bar .progress {
+  width: 0%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: red;
+}
+.progress-bar .progress span {
+  position: absolute;
+  top: 50%;
+  display: block;
+  width: 14px;
+  height: 14px;
+  background: blueviolet;
+  border-radius: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.review-timer {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  width: 40px;
+  background: #000;
+  color: #fff;
+  display: none;
+  transform: translateX(-50%);
+  font-size: 12px;
+}
+
+.openKaraokeBtn {
+  display: block;
+  width: 100px;
+  height: 30px;
+  margin: 0 auto;
+  background: #8a1be2;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.karaoke-screen {
+  position: fixed;
+  top: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #8a1be2;
+  color: #ffffff;
+  transition: top 0.3s ease;
+}
+
+.karaoke-screen .karaoke-header {
+  display: flex;
+  padding-top: 20px;
+  padding-inline: 50px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.karaoke-screen .karaoke-header h2 {
+  font-size: 48px;
+}
+
+.karaoke-screen .karaoke-header .closeKaraokeBtn {
+  cursor: pointer;
+  background: transparent;
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.karaoke-inner {
+  width: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  font-size: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-weight: 600;
+}
