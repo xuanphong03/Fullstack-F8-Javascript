@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.karaoke {
+  height: 400px;
+  background: blueviolet;
+  color: #fff;
+  padding: 30px;
+}
+
+.karaoke h1 {
+  text-align: center;
+}
+
+.karaoke .karaoke-inner {
+  max-width: 80%;
+  margin-inline: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.karaoke .karaoke-inner p {
+  margin: 10px 0;
+}
+
+.karaoke .karaoke-inner .word {
+  position: relative;
+  display: inline-block; /*Fix bug khi sentence gồm nhiều từ */
+  white-space: nowrap; /* Fix bug khi sentence gồm nhiều từ */
+}
+.karaoke .karaoke-inner .word span {
+  flex-direction: row;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: yellow;
+  width: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
