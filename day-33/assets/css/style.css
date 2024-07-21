@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.lessons-list {
+  margin: 10px;
+  padding: 10px;
+  background: blue;
+  list-style: none;
+  max-width: 50%;
+}
+
+.lessons-list .lesson-item {
+  background: #8bb3f4;
+  padding: 10px 5px;
+  border: 1px solid #fff;
+  margin-bottom: 8px;
+}
+.lessons-list .lesson-item.lesson-item--module {
+  background: #ff6f00;
+}
+
+.lesson-item.dragging {
+  opacity: 0.5;
+}
+
+li {
+  transition: transform 0.2s ease;
+}
