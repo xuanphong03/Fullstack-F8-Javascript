@@ -8,6 +8,7 @@ var wordsNumberEl = document.querySelector(".count-words span");
 var newEditorBtn = document.querySelector(".dropdown-item.new-btn");
 var saveAsTXTBtn = document.querySelector(".dropdown-item.txt-btn");
 var saveAsPDFBtn = document.querySelector(".dropdown-item.pdf-btn");
+var colorTextBoxEl = document.querySelector(".color-box input");
 
 var fileNameEl = document.querySelector(".fileName-wrapper input");
 
@@ -58,6 +59,20 @@ editorContentEl.addEventListener("input", function (e) {
   handleUpdateWordsNumber(editorContent);
 });
 
+// Xử lý sự kiện đổi màu chữ
+colorTextBoxEl.addEventListener("change", function (e) {
+  e.preventDefault();
+  var color = colorTextBoxEl.value;
+  document.execCommand("foreColor", false, color); // with alpha hex
+});
+
+// Xử lý sự kiện paste để chỉ dán văn bản thuần
+editorContentEl.addEventListener("paste", function (e) {
+  e.preventDefault();
+  var text = (e.clipboardData || window.clipboardData).getData("text");
+  document.execCommand("insertText", false, text);
+});
+
 // New Editor
 newEditorBtn.addEventListener("click", function (e) {
   e.preventDefault();
@@ -67,7 +82,7 @@ newEditorBtn.addEventListener("click", function (e) {
 
 // Save as TXT
 saveAsTXTBtn.addEventListener("click", function () {
-  var editorContent = editorContentEl.innerHTML;
+  var editorContent = editorContentEl.innerText;
   var fileName = fileNameEl.value;
   var blob = new Blob([editorContent], {
     type: "text/plain;charset=utf-8",
@@ -109,7 +124,4 @@ saveAsPDFBtn.addEventListener("click", function (e) {
 
   // New Promise-based usage:
   html2pdf().set(opt).from(editorContent).save();
-
-  // Old monolithic-style usage:
-  html2pdf(editorContent, opt);
 });
