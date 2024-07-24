@@ -114,3 +114,5 @@ var h1 = boxEl.shadowRoot.querySelector("h1");
 // var shadowRoot = boxEl.attachShadow({
 //   mode: "open",
 // });
+
+// Tìm hiểu thẻ template và slot
