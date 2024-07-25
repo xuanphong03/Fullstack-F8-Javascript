@@ -11,6 +11,8 @@ var saveAsPDFBtn = document.querySelector(".dropdown-item.pdf-btn");
 var colorTextBoxEl = document.querySelector(".color-box input");
 
 var fileNameEl = document.querySelector(".fileName-wrapper input");
+var defaultFileName = "untitled";
+fileNameEl.value = defaultFileName;
 
 // Handle Editor Tools
 
@@ -30,8 +32,8 @@ var controlsBtn = document.querySelectorAll(".editor-tools-right button");
 controlsBtn.forEach(function (controlBtn) {
   controlBtn.addEventListener("click", function (e) {
     e.preventDefault();
+    controlBtn.classList.toggle("active");
     editorContentEl.focus();
-
     var property = controlBtn.dataset.element;
     document.execCommand(property);
   });
@@ -49,7 +51,8 @@ var handleUpdateWordsNumber = function (editorContent = "") {
     wordsNumberEl.innerText = 0;
     return;
   }
-  wordsNumberEl.innerText = editorContent.split(" ").length;
+  editorContent = editorContent.trim();
+  wordsNumberEl.innerText = editorContent.split(/\s+/g).length;
 };
 
 // Cập nhật số ký tự và số từ
@@ -77,6 +80,12 @@ editorContentEl.addEventListener("paste", function (e) {
 newEditorBtn.addEventListener("click", function (e) {
   e.preventDefault();
   editorContentEl.innerHTML = "";
+  // Đổi tên file thành mặc định sau khi click New
+  fileNameEl.value = defaultFileName;
+  // Remove active button control
+  controlsBtn.forEach((controlBtn) => controlBtn.classList.remove("active"));
+  // Set màu về màu mặc định
+  colorTextBoxEl.value = "#000000";
   editorContentEl.focus();
 });
 

@@ -124,10 +124,14 @@ body {
   justify-content: center;
   cursor: pointer;
 }
+
 .doc-editor .editor-tools .editor-tools-right button:not(.color-btn) {
   font-size: 1.5rem;
   color: #fff;
   background: #212529;
+}
+.doc-editor .editor-tools .editor-tools-right button:not(.color-btn).active {
+  background: rgb(75, 75, 233);
 }
 .doc-editor .editor-tools .editor-tools-right button:not(.color-btn):hover {
   opacity: 0.85;
