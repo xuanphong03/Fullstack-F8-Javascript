@@ -14,12 +14,16 @@ function startCountDown() {
   if (remainingTime > 0) {
     requestAnimationFrameId = requestAnimationFrame(startCountDown);
   } else {
-    const css = {
-      cursor: "pointer",
-      background: "03BDF0",
-    };
-    Object.assign(timerEl.style, css);
+    getLinkBtn.style.cursor = "pointer";
+    getLinkBtn.style.background = "#03bdf0";
+    addEventGetLink();
   }
+}
+
+function addEventGetLink() {
+  getLinkBtn.addEventListener("click", function () {
+    window.location.href = "https://fullstack.edu.vn/";
+  });
 }
 
 function stopCountDown() {
