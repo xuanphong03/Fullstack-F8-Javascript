@@ -44,60 +44,36 @@ voiceSearchBtn.addEventListener("click", function () {
   // Message content
   actionEl.innerText = "Hãy nói nội dung bạn muốn";
   actionEl.classList.add("active", "action");
+  // Message Result
+  resultEl.style.display = "none";
 });
 
 // Lấy type và key (ví dụ "Mở bài hát ai chung tình được mãi" => return {type: "music", key:"ai chung tình được mãi"})
 const handleGetTypeAndKey = (msg) => {
-  for (let i = 0; i < directionKeywords.length; i++) {
-    const keyword = directionKeywords[i];
+  const keywords = [
+    ...directionKeywords,
+    ...openMusicKeywords,
+    ...openVideoKeywords,
+  ];
+  for (const keyword of keywords) {
     if (msg.includes(keyword)) {
+      const type = directionKeywords.includes(keyword)
+        ? TYPES.DIRECTION
+        : openMusicKeywords.includes(keyword)
+        ? TYPES.MUSIC
+        : TYPES.VIDEO;
       const position = msg.indexOf(keyword);
-      const _msg = msg.slice(position + keyword.length + 1).trim();
-      return {
-        type: TYPES.DIRECTION,
-        key: _msg,
-      };
+      const _msg = msg.slice(position + keyword.length).trim();
+      return { type, key: _msg };
     }
   }
-
-  for (let i = 0; i < openMusicKeywords.length; i++) {
-    const keyword = openMusicKeywords[i];
-    if (msg.includes(keyword)) {
-      const position = msg.indexOf(keyword);
-      const _msg = msg.slice(position + keyword.length + 1).trim();
-      return {
-        type: TYPES.MUSIC,
-        key: _msg,
-      };
-    }
-  }
-
-  for (let i = 0; i < openVideoKeywords.length; i++) {
-    const keyword = openVideoKeywords[i];
-    if (msg.includes(keyword)) {
-      const position = msg.indexOf(keyword);
-      const _msg = msg.slice(position + keyword.length + 1).trim();
-      return {
-        type: TYPES.VIDEO,
-        key: _msg,
-      };
-    }
-  }
-  return {
-    type: null,
-    key: null,
-  };
+  return { type: null, key: null };
 };
 
 // Xử lý sự kiện kết quả
 recognition.onresult = (event) => {
   // Lấy chuỗi văn bản đã nhận diện được
   const text = event.results[0][0].transcript.trim().toLowerCase();
-
-  // Message Result
-  resultEl.style.display = "block";
-  resultEl.classList.add("result");
-  resultEl.innerText = `Đang xử lý: ${text}`;
 
   // Xử lý chuỗi văn bản để biết được người dùng vừa đọc gì
   const { type, key } = handleGetTypeAndKey(text);
@@ -131,8 +107,14 @@ recognition.onresult = (event) => {
     recognition.stop();
     actionEl.classList.remove("active");
 
+    // Message Result
+    resultEl.style.display = "block";
+    resultEl.classList.add("result");
+    resultEl.innerText = `Đang xử lý: ${text}`;
+
     setTimeout(() => {
       resultEl.innerText = message;
+      actionEl.innerText = "Đã nói xong. Hy vọng kết quả như ý bạn";
       if (message === MESSAGES.success && url) {
         setTimeout(() => {
           window.open(url, "_blank");
