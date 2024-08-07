@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+}
+
+html {
+  font-size: 62.5%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  font-size: 1.6rem;
+  line-height: 1.5;
+  padding: 50px;
+}
+
+.original-image-wrapper {
+  position: relative;
+  width: 600px;
+  height: 400px;
+  border: 1px solid red;
+  overflow: hidden;
+}
+
+.original-image-wrapper img {
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.original-image-wrapper .zoom-glass {
+  display: none;
+  position: fixed;
+  width: calc(600px * (40 / 100));
+  height: calc(400px * (40 / 100));
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.5);
+}
