@@ -3,19 +3,66 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Zoom Ảnh</title>
+    <title>TODO APP</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
   <body>
-    <div id="root">
-      <div class="original-image-wrapper">
-        <img
-          alt="motor bike"
-          src="https://bd.gaadicdn.com/processedimages/ola-electric/ola-electric-bike/source/ola-electric-bike64e8a7ee0b4a1.jpg"
-        />
-        <div class="zoom-glass"></div>
+    <div class="container">
+      <h1>Smatyx Todos App</h1>
+      <div class="controls">
+        <div class="search-box">
+          <input placeholder="Tên todo" type="text" class="search-input" />
+          <button class="search-btn" type="button">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+        <button class="open-form-add-btn" type="button">Tạo Todo</button>
       </div>
-      <div class="zoomed-image-wrapper"></div>
+      <ul class="todo-list todo-list--unfinished"></ul>
+      <button type="button" class="show toggle-finished-todo-list">
+        Todo đã hoàn thành <span class="finished-todo-count">1</span>
+        <i class="icon-arrow fa-solid fa-arrow-down"></i>
+      </button>
+      <ul class="todo-list todo-list--finished"></ul>
+    </div>
+    <div class="modal">
+      <div class="bg-shadow"></div>
+      <form name="add-form" class="form add-form">
+        <div>
+          <input
+            required
+            placeholder="add todo"
+            type="text"
+            class="add-todo-input"
+          />
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn add-btn">Add</button>
+          <button type="button" class="btn cancel-btn">Cancel</button>
+        </div>
+      </form>
+
+      <form name="update-form" class="form update-form">
+        <div>
+          <input
+            required
+            placeholder="save todo"
+            type="text"
+            class="update-todo-input"
+          />
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn update-btn">Add</button>
+          <button type="button" class="btn cancel-btn">Cancel</button>
+        </div>
+      </form>
     </div>
     <script src="./assets/js/main.js"></script>
   </body>

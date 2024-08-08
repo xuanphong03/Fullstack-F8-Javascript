@@ -2,8 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  border: 0;
   outline: 0;
+  border: 0;
 }
 
 html {
@@ -14,27 +14,180 @@ html {
 body {
   font-size: 1.6rem;
   line-height: 1.5;
-  padding: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-.original-image-wrapper {
-  position: relative;
+.container {
   width: 600px;
-  height: 400px;
-  border: 1px solid red;
-  overflow: hidden;
+  height: 600px;
 }
 
-.original-image-wrapper img {
-  max-width: 100%;
-  object-fit: contain;
+.container h1 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.original-image-wrapper .zoom-glass {
-  display: none;
+.container .controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.container .controls .search-box {
+  position: relative;
+  width: 500px;
+}
+
+.container .controls .search-box .search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 4px;
+}
+.container .controls .search-box .search-btn {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+  color: #fff;
+  border-radius: 4px;
+  display: flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(0, 0, 255, 0.7);
+}
+.container .controls .search-box .search-btn:hover {
+  opacity: 0.75;
+}
+
+.container .controls .open-form-add-btn {
+  padding: 10px;
+  color: #fff;
+  border-radius: 4px;
+  background: rgba(0, 128, 0, 0.7);
+  cursor: pointer;
+}
+.container .controls .open-form-add-btn:hover {
+  opacity: 0.7;
+}
+
+.container .todo-list {
+  list-style: none;
+  margin: 20px 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.todo-item .actions .btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+.todo-item .actions .btn:hover {
+  opacity: 0.6;
+}
+.todo-item .actions .btn.remove-btn {
+  background: red;
+}
+.todo-item .actions .btn.edit-btn {
+  background: blue;
+}
+.todo-item .actions .btn.complete-btn {
+  background: gray;
+}
+
+.modal {
   position: fixed;
-  width: calc(600px * (40 / 100));
-  height: calc(400px * (40 / 100));
-  transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.5);
+  inset: 0;
+  display: none;
+}
+
+.modal .bg-shadow {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0.45;
+}
+
+.modal .form {
+  position: absolute;
+  inset: 0;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 400px;
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal .form > div input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.modal .form .actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.modal .form .actions button {
+  flex-basis: 20%;
+  max-width: 20%;
+  border: 1px solid #ccc;
+  padding: 5px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.modal .form .actions button:hover {
+  opacity: 0.75;
+}
+.modal .form .actions button:first-child {
+  color: #fff;
+  background: rgba(0, 128, 0, 0.8);
+}
+
+button > i {
+  pointer-events: none;
+}
+
+.todo-item.todo-item--completed .actions .btn.complete-btn {
+  background: green;
+}
+
+.marked-text {
+  background: rgba(0, 0, 255, 0.4);
+}
+
+.toggle-finished-todo-list {
+  padding: 10px 20px;
+  border-radius: 4px;
+  color: #fff;
+  background: rgba(0, 128, 0, 0.75);
+  cursor: pointer;
+}
+.toggle-finished-todo-list:hover {
+  opacity: 0.7;
 }
