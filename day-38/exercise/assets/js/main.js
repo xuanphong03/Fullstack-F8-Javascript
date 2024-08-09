@@ -124,21 +124,25 @@ const handleToggleCompleteTodo = async (e) => {
   e.preventDefault();
   const todoId = e.target.dataset.id;
   const todoItem = document.querySelector(`li[data-id='${todoId}']`);
-  if (todoId !== null && todoItem) {
+  if (todoItem) {
     const completedStatus = todoItem.classList.contains("todo-item--completed");
-    const response = await fetch(`${apiUrl}/${todoId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        completed: !completedStatus,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        renderUI();
-      });
+    try {
+      const response = await fetch(`${apiUrl}/${todoId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          completed: !completedStatus,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          renderUI();
+        });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 };
 
@@ -147,17 +151,21 @@ const handleRemoveTodo = async (e) => {
   e.preventDefault();
   const todoId = e.target.dataset.id;
   if (todoId !== null) {
-    const response = await fetch(`${apiUrl}/${todoId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({}),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        renderUI();
-      });
+    try {
+      const response = await fetch(`${apiUrl}/${todoId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          renderUI();
+        });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 };
 
@@ -176,21 +184,25 @@ const handleUpdateTodo = (e) => {
       e.preventDefault();
       e.stopPropagation();
       const title = updateTodoInputEl.value;
-      const response = await fetch(`${apiUrl}/${todoId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-        }),
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          renderUI();
-          modal.style.display = "none";
-          updateTodoForm.style.display = "none";
-        });
+      try {
+        const response = await fetch(`${apiUrl}/${todoId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+          }),
+        })
+          .then((res) => res.json())
+          .then((json) => {
+            renderUI();
+            modal.style.display = "none";
+            updateTodoForm.style.display = "none";
+          });
+      } catch (error) {
+        throw new Error(error);
+      }
     });
   }
 };
