@@ -17,9 +17,11 @@ const finishedTodoCount = toggleFinishedTodoList.querySelector(
 const updateTodoForm = document.querySelector(".update-form");
 const updateTodoInputEl = document.querySelector(".update-todo-input");
 const updateBtn = document.querySelector(".update-btn");
+const loadingModal = document.querySelector(".loading-modal");
 
 let todoId = 0;
 let isSubmitting = false;
+let isLoading = false;
 
 // Func: Render Todo List
 const renderTodoList = (todoList, searchTerm = "") => {
@@ -198,8 +200,12 @@ cancelBtnList.forEach((cancelBtn) => {
   cancelBtn.addEventListener("click", handleCloseModal);
 });
 
+const handleShowLoading = (e) => {};
+
 // Xử lý render UI
 const renderUI = (searchTerm = "") => {
+  loadingModal.style.opacity = "1";
+  loadingModal.style.visibility = "visible";
   new Promise((resolve, reject) => {
     const todoList = fetch(apiUrl, {
       method: "GET",
@@ -209,6 +215,9 @@ const renderUI = (searchTerm = "") => {
 
     resolve(todoList);
   }).then((todoList) => {
+    loadingModal.style.opacity = "0";
+    loadingModal.style.visibility = "hidden";
+
     const unfinishedTodoList = todoList.filter(
       (todoItem) => !todoItem.completed
     );
