@@ -1,4 +1,4 @@
-const apiUrl = "http://localhost:3001/todos";
+const apiUrl = "https://kqzj4c-8080.csb.app/todos";
 const searchInputEl = document.querySelector(".search-input");
 const unfinishedTodoListEl = document.querySelector(".todo-list--unfinished");
 const finishedTodoListEl = document.querySelector(".todo-list--finished");
@@ -19,6 +19,7 @@ const updateTodoInputEl = document.querySelector(".update-todo-input");
 const updateBtn = document.querySelector(".update-btn");
 
 let todoId = 0;
+let isSubmitting = false;
 
 // Func: Render Todo List
 const renderTodoList = (todoList, searchTerm = "") => {
@@ -68,26 +69,35 @@ const handleAddTodo = async (e) => {
   e.preventDefault();
   e.stopPropagation();
 
+  if (isSubmitting) return; // Nếu đang xử lý, không làm gì thêm
+  isSubmitting = true; // Đặt trạng thái là đang xử lý
+
   const title = addTodoInputEl.value;
   if (title.trim()) {
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: ++todoId,
-        title: title,
-        completed: false,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        renderUI();
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: ++todoId,
+          title: title,
+          completed: false,
+        }),
       });
-    addTodoInputEl.value = "";
-    modal.style.display = "none";
-    addTodoForm.style.display = "none";
+      const data = await response.json();
+      renderUI();
+      addTodoInputEl.value = "";
+      modal.style.display = "none";
+      addTodoForm.style.display = "none";
+    } catch (error) {
+      console.error("Có lỗi xảy ra:", error);
+    } finally {
+      isSubmitting = false; // Đặt lại trạng thái sau khi xử lý xong
+    }
+  } else {
+    isSubmitting = false; // Đặt lại trạng thái nếu không có title hợp lệ
   }
 };
 
