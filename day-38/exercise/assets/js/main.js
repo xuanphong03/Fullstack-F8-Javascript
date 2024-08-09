@@ -257,7 +257,9 @@ const renderUI = (searchTerm = "", action = "") => {
     finishedTodoListEl.innerHTML = renderTodoList(finishedTodoList, searchTerm);
 
     // Update todo ID
-    todoId = todoList.length;
+    todoId = todoList.reduce((prevId, { id }) => {
+      return id >= prevId ? id : prevId;
+    }, todoId);
 
     // Update Completed Todo Count
     finishedTodoCount.innerText = finishedTodoList.length;
