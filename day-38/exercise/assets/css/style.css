@@ -155,10 +155,9 @@ body {
 }
 
 .modal .form .actions button {
-  flex-basis: 20%;
-  max-width: 20%;
+  width: 200px;
   border: 1px solid #ccc;
-  padding: 5px 20px;
+  padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
 }
