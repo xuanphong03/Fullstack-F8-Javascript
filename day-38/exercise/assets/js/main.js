@@ -22,7 +22,12 @@ const loadingModal = document.querySelector(".loading-modal");
 let todoId = 0;
 let isSubmitting = false;
 let isLoading = false;
-
+const MODE = {
+  get: "GET",
+  add: "POST",
+  update: "PATCH",
+  remove: "DELETE",
+};
 // Func: Render Todo List
 const renderTodoList = (todoList, searchTerm = "") => {
   const filteredTodoList = todoList.filter((todo) =>
@@ -77,6 +82,8 @@ const handleAddTodo = async (e) => {
   const title = addTodoInputEl.value;
   if (title.trim()) {
     try {
+      addBtn.style.opacity = "0.5";
+      addBtn.style.cursor = "not-allowed";
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -96,6 +103,8 @@ const handleAddTodo = async (e) => {
     } catch (error) {
       console.error("Có lỗi xảy ra:", error);
     } finally {
+      addBtn.style.opacity = "1";
+      addBtn.style.cursor = "pointer";
       isSubmitting = false; // Đặt lại trạng thái sau khi xử lý xong
     }
   } else {
@@ -184,6 +193,8 @@ const handleUpdateTodo = (e) => {
       e.preventDefault();
       e.stopPropagation();
       const title = updateTodoInputEl.value;
+      updateBtn.style.opacity = "0.5";
+      updateBtn.style.cursor = "not-allowed";
       try {
         const response = await fetch(`${apiUrl}/${todoId}`, {
           method: "PATCH",
@@ -202,6 +213,9 @@ const handleUpdateTodo = (e) => {
           });
       } catch (error) {
         throw new Error(error);
+      } finally {
+        updateBtn.style.opacity = "1";
+        updateBtn.style.cursor = "pointer";
       }
     });
   }
@@ -215,9 +229,11 @@ cancelBtnList.forEach((cancelBtn) => {
 const handleShowLoading = (e) => {};
 
 // Xử lý render UI
-const renderUI = (searchTerm = "") => {
-  loadingModal.style.opacity = "1";
-  loadingModal.style.visibility = "visible";
+const renderUI = (searchTerm = "", action = "") => {
+  if (action === MODE.get) {
+    loadingModal.style.opacity = "1";
+    loadingModal.style.visibility = "visible";
+  }
   new Promise((resolve, reject) => {
     const todoList = fetch(apiUrl, {
       method: "GET",
@@ -263,7 +279,7 @@ const renderUI = (searchTerm = "") => {
     });
   });
 };
-renderUI();
+renderUI("", MODE.get);
 
 // Xử lý thêm Todo
 openAddFormBtn.addEventListener("click", function () {
