@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch API</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container py-3">
+      <table name="add-user-form" class="table table-bordered">
+        <thead>
+          <tr>
+            <td width="5%">STT</td>
+            <td>Tên</td>
+            <td>Email</td>
+            <td>Trạng thái</td>
+            <td width="5%">Sửa</td>
+            <td width="5%">Xóa</td>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <form action="" class="update-form">
+        <h3>Thêm người dùng</h3>
+        <div class="mb-3">
+          <label for=""> Tên </label>
+          <input
+            type="text"
+            name="name"
+            class="form-control"
+            placeholder="Tên..."
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for=""> Email </label>
+          <input
+            type="email"
+            name="email"
+            class="form-control"
+            placeholder="Email..."
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for=""> Trạng thái </label>
+          <select name="status" class="form-select">
+            <option value="inactive">Chưa kích hoạt</option>
+            <option value="active">Kích hoạt</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+    <script src="./fetch-api.js"></script>
+  </body>
+</html>
