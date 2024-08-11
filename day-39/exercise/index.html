@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <div id="root">
+      <div class="todo-app">
+        <h1 class="heading"><span>Smatyx</span> Todos App</h1>
+        <div class="actions-box">
+          <div class="search-box">
+            <input
+              type="text"
+              name="search-todo"
+              class="search-input"
+              placeholder="Search todo"
+            />
+            <span class="search-icon"
+              ><i class="fa-solid fa-magnifying-glass"></i
+            ></span>
+          </div>
+          <button class="add-btn">Add Todo</button>
+        </div>
+        <div class="todo-list-container">
+          <ul class="todo-list todo-list--uncompleted"></ul>
+          <button class="toggle-todo-list--completed show">
+            Completed Todos <span class="completed-todo-counter">0</span>
+            <span class="arrow-icon"
+              ><i class="fa-solid fa-circle-chevron-right"></i
+            ></span>
+          </button>
+          <ul class="todo-list todo-list--completed"></ul>
+        </div>
+      </div>
+      <div class="modal">
+        <div class="bg-shadow"></div>
+        <form class="form">
+          <div class="input-field">
+            <input type="text" name="title" placeholder="Add Todos" required />
+          </div>
+          <div class="actions-box">
+            <button type="submit" class="save-btn">Save</button>
+            <button type="button" class="cancel-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="loading">
+        <div class="loading-inner"><i class="fa-solid fa-spinner"></i></div>
+      </div>
+    </div>
+    <script type="module" src="./assets/js/main.js"></script>
+  </body>
+</html>
