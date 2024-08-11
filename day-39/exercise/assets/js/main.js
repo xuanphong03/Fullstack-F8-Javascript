@@ -40,6 +40,10 @@ const updateTodo = async (id, data) => {
 
 const deleteTodo = async (id) => {
   try {
+    if (isLoading) return;
+    isLoading = true;
+    loadingModal.style.opacity = "1";
+    loadingModal.style.visibility = "visible";
     const response = await fetch(`${apiUrl}/todos/${id}`, {
       method: "DELETE",
       headers: {
@@ -50,11 +54,19 @@ const deleteTodo = async (id) => {
     return response.ok;
   } catch (error) {
     console.log(error);
+  } finally {
+    isLoading = false;
+    loadingModal.style.opacity = "0";
+    loadingModal.style.visibility = "hidden";
   }
 };
 
 const toggleTodoStatus = async (id, status) => {
   try {
+    if (isLoading) return;
+    isLoading = true;
+    loadingModal.style.opacity = "1";
+    loadingModal.style.visibility = "visible";
     const response = await fetch(`${apiUrl}/todos/${id}`, {
       method: "PATCH",
       headers: {
@@ -65,6 +77,10 @@ const toggleTodoStatus = async (id, status) => {
     return response.ok;
   } catch (error) {
     console.log(error);
+  } finally {
+    isLoading = false;
+    loadingModal.style.opacity = "0";
+    loadingModal.style.visibility = "hidden";
   }
 };
 
