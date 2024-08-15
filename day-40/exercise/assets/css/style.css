@@ -175,3 +175,6 @@ body {
   opacity: 1;
   visibility: visible;
 }
+.blogs-list-end {
+  height: 10px;
+}

@@ -76,18 +76,16 @@ const renderBlogs = (blogs) => {
 };
 
 const handleOnScroll = () => {
-  window.addEventListener("scroll", (e) => {
-    if (
-      window.scrollY + window.innerHeight >=
-        document.documentElement.scrollHeight * 0.95 &&
-      !isFetching &&
-      !isGotAllBlogs
-    ) {
-      params._page = params._page + 1;
-      handleGetAllBlogs(params);
-    }
+  const blogsEnd = document.querySelector(".blogs-list-end");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !isFetching && !isGotAllBlogs) {
+        handleGetAllBlogs(params);
+        params._page++;
+      }
+    });
   });
+  observer.observe(blogsEnd);
 };
 
-handleGetAllBlogs(params);
 handleOnScroll();
