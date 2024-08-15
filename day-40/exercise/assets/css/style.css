@@ -1,0 +1,177 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+:root {
+  --main-color: #6eeb83;
+  --background-color: #272727;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+}
+html {
+  font-size: 62.5%;
+  font-family: "Lexend Deca", sans-serif;
+}
+body {
+  font-size: 1.6rem;
+  line-height: 1.5;
+  color: #ffffff;
+  background-color: var(--background-color);
+}
+#blogger {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------------------- */
+/* Header */
+.header {
+  display: flex;
+  justify-content: center;
+  flex-direction: row !important;
+  gap: 8px;
+}
+.header-intro {
+  display: flex;
+  width: fit-content;
+  padding: 0.8rem 2rem;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 10rem;
+  border: 1px solid var(--main-color);
+  color: var(--main-color);
+  font-size: 1.3rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+/* ------------------------------------------------------------------------------------------------------------------------------- */
+/* Container */
+.home-page {
+}
+.heading {
+  width: fit-content;
+  color: var(--main-color);
+  font-size: 2.2rem;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+.login-btn {
+  background: var(--main-color);
+  color: var(--background-color);
+  font-size: 1.4rem;
+  padding: 18px 23px;
+  width: 178px;
+  height: 60px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0.92px;
+}
+
+/* Blogs */
+.blogs-list {
+  display: flex;
+  flex-direction: column;
+  margin: 50px 0;
+  gap: 50px;
+}
+.blog-item {
+  display: flex;
+}
+.blog-time-up {
+  min-width: 100px;
+}
+
+.blog-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  width: 800px;
+  margin-left: 100px;
+}
+.tag-name {
+  font-size: 1.4rem;
+  position: absolute;
+  rotate: 270deg;
+  transform-origin: top left;
+  left: -40px;
+  bottom: 0;
+}
+.blog-header {
+  display: flex;
+  gap: 20px;
+  align-items: end;
+}
+.blog-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: var(--main-color);
+  text-decoration: underline;
+  text-decoration-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  color: var(--background-color);
+}
+.blog-username {
+  font-size: 2.4rem;
+  text-decoration: underline;
+}
+.blog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.blog-title {
+  color: var(--main-color);
+  font-size: 2.2rem;
+  font-weight: 400;
+}
+.blog-content {
+  font-size: 1.8rem;
+  /* display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden; */
+}
+.blog-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-bottom: 1px solid #fff;
+  padding-bottom: 20px;
+}
+.view-more-btn,
+.hash-tag {
+  color: var(--main-color);
+  border: 1px solid var(--main-color);
+  width: fit-content;
+  font-size: 1.3rem;
+  padding: 5px 15px;
+  border-radius: 99px;
+}
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  color: #fff;
+  font-size: 2.4rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s ease;
+}
+.loading.show {
+  opacity: 1;
+  visibility: visible;
+}
