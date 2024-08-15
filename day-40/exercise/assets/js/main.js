@@ -77,11 +77,17 @@ const renderBlogs = (blogs) => {
 
 const handleOnScroll = () => {
   const blogsEnd = document.querySelector(".blogs-list-end");
-  const observer = new IntersectionObserver((entries) => {
+  const observer = new IntersectionObserver((entries, observer) => {
+    console.log(observer);
+
     entries.forEach((entry) => {
-      if (entry.isIntersecting && !isFetching && !isGotAllBlogs) {
-        handleGetAllBlogs(params);
-        params._page++;
+      if (entry.isIntersecting) {
+        if (!isFetching && !isGotAllBlogs) {
+          handleGetAllBlogs(params);
+          params._page++;
+        } else {
+          observer.unobserve(blogsEnd);
+        }
       }
     });
   });
