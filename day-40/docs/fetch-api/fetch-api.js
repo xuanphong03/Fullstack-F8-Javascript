@@ -22,7 +22,7 @@
  * + multipart/form-data (text, file)
  */
 import { useDebounced } from "./hooks.js";
-const apiUrl = "http://localhost:3001";
+const apiUrl = "http://localhost:3000";
 const tbodyTableEl = document.querySelector("tbody");
 const paginationViewEl = document.querySelector(".pagination-view");
 
@@ -32,7 +32,7 @@ cancelBtn.type = "button";
 cancelBtn.innerText = "Cancel";
 cancelBtn.className = "btn btn-danger";
 
-let query = { _sort: "id", _order: "asc", _page: 1, _limit: 5 };
+let query = { _sort: "id", _order: "desc", _page: 1, _limit: 3 };
 
 // Xử lý thêm User
 const handleGetUser = async (query) => {
@@ -133,13 +133,17 @@ const handleAddUser = () => {
     if (!id) {
       const status = await addUser(formData);
       if (status) {
-        handleGetUser();
+        // Thêm thành công
+        query._page = 1; // Chuyển về trang 1
+        query._order = "desc"; // Chuyển thành sắp xếp mới nhất
+        handleGetUser(query);
+        renderSort();
         form.reset();
       }
     } else {
       const status = await updateUser(id, formData);
       if (status) {
-        handleGetUser();
+        handleGetUser(query);
         switchFormAdd();
       }
     }
@@ -201,7 +205,11 @@ const handleDeleteUser = () => {
       if (confirm("Bạn có chắc chắn muốn xóa?")) {
         const status = await deleteUser(id);
         if (status) {
-          handleGetUser();
+          const userListEl = document.querySelectorAll(".user-list tr");
+          if (userListEl.length === 0 && query._page > 1) {
+            query._page--;
+          }
+          handleGetUser(query);
         }
       }
     }
@@ -220,7 +228,6 @@ const handleSearchUser = () => {
     debounced(value);
   });
 };
-
 // Xử lý sắp xếp
 const handleSortUser = () => {
   const sortBtnList = document.querySelectorAll(".btn-sort");
@@ -231,11 +238,12 @@ const handleSortUser = () => {
       if (sort && allowed.includes(sort)) {
         query = { ...query, _order: sort };
         handleGetUser(query);
-        const activeBtn = document.querySelector(".active");
-        if (activeBtn) {
-          activeBtn.classList.remove("active");
-        }
-        sortBtn.classList.add("active");
+        // const activeBtn = document.querySelector(".active");
+        // if (activeBtn) {
+        //   activeBtn.classList.remove("active");
+        // }
+        // sortBtn.classList.add("active");
+        renderSort();
       }
     });
   });
@@ -254,36 +262,46 @@ const handleNavigatePagination = async () => {
       if (activePage) {
         activePage.classList.remove("active");
       }
-      //   const currentPage = document.querySelector(
-      //     `.page-item a[data-page='${page}']`
-      //   );
-
-      //   if (currentPage) {
-      //     currentPage.parentElement.classList.add("active");
-      //   }
     }
   });
+};
+
+const renderSort = () => {
+  const btnSortEl = document.querySelector(".btn-sort");
+  btnSortEl.innerHTML = `
+    <button data-sort="desc" class="btn btn-sm btn-primary btn-sort ${
+      query._order === "desc" ? "active" : ""
+    }">
+      Mới nhất
+    </button>
+    <button
+      data-sort="asc"
+      class="btn btn-sm btn-primary btn-sort ${
+        query._order === "asc" ? "active" : ""
+      }"
+    >
+      Cũ nhất
+    </button>
+  `;
 };
 
 const renderPagination = (total_page) => {
   paginationViewEl.innerHTML = `
     <ul class="pagination">
         ${
-          query._page > 1 ? (
-            <li data-type="prev" class="page-item">
-              <a class="page-link" href="#" aria-label="Previous">
-                &laquo;
-              </a>
-            </li>
-          ) : (
-            ""
-          )
+          query._page > 1
+            ? `<li data-type="prev" class="page-item">
+            <a  class="page-link" href="#" aria-label="Previous">
+              &laquo;
+            </a>
+          </li>`
+            : ``
         }
         ${[...Array(total_page)]
           .map((_, index) => {
             const page = index + 1;
             return `<li  class="page-item ${
-              page === 1 ? "active" : ""
+              page === query._page ? "active" : ""
             }"><a data-page='${page}' class="page-link" href="#">${page}</a></li>`;
           })
           .join("")}
@@ -304,3 +322,4 @@ handleDeleteUser();
 handleSearchUser();
 handleSortUser();
 handleNavigatePagination();
+renderSort();
