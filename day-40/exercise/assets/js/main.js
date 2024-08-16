@@ -28,6 +28,7 @@ const handleGetAllBlogs = async (params) => {
     if (postsList.length >= totalBlogs) {
       isGotAllBlogs = true;
     }
+    return response.ok;
   } catch (error) {
     throw new Error("Có lỗi get all blogs");
   } finally {
@@ -80,11 +81,14 @@ const handleOnScroll = () => {
   const observer = new IntersectionObserver((entries, observer) => {
     console.log(observer);
 
-    entries.forEach((entry) => {
+    entries.forEach(async (entry) => {
       if (entry.isIntersecting) {
         if (!isFetching && !isGotAllBlogs) {
-          handleGetAllBlogs(params);
-          params._page++;
+          const status = await handleGetAllBlogs(params);
+          // Nếu thành công mới tăng
+          if (status) {
+            params._page++;
+          }
         } else {
           observer.unobserve(blogsEnd);
         }
