@@ -89,7 +89,7 @@ const showQuiz = (quiz) => {
   // Lưu kết quả câu trả lời (true/false)
   let answerStatus = null;
   // Lưu số câu hỏi đã trả lời
-  let countAnswer = 0;
+  const answerList = [];
   // Check trạng thái đã chọn câu trả lời
   hasChooseAnswer = false;
   // Hiển thị câu hỏi
@@ -98,15 +98,20 @@ const showQuiz = (quiz) => {
   answerElList.forEach((answerEl, index) => {
     const { text, correct } = answer[index];
     answerEl.innerText = text;
+    answerEl.dataset.answer = text;
     answerEl.dataset.correct = correct;
-    answerEl.addEventListener("click", () => {
-      if (hasChooseAnswer) return;
-      countAnswer++;
+    answerEl.addEventListener("click", (e) => {
+      if (answerList.length === total_answer) return;
+
+      const { answer } = e.target.dataset;
+      if (!answerList.includes(answer)) {
+        answerList.push(answer);
+      }
       answerEl.classList.add("bg-blue-500");
       console.log("Cancel", requestAnimationFrameId);
 
       cancelAnimationFrame(requestAnimationFrameId);
-      if (countAnswer === total_answer) {
+      if (answerList.length === total_answer) {
         hasChooseAnswer = true;
         answerStatus = checkAnswerOfUser();
         showCorrectAnswer();
