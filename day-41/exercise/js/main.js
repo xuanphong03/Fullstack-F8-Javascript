@@ -35,7 +35,7 @@ let correctAnswer = 0;
 let incorrectAnswer = 0;
 
 let quizList = [];
-let currentQuizIndex = 0;
+let currentQuestionIndex = 0;
 let hasChooseAnswer = false;
 const bonusScore = 100;
 const defaultScore = 1000;
@@ -110,9 +110,9 @@ const handleChooseIncorrectAnswer = () => {
 const moveOnNextQuiz = () => {
   resetQuiz();
 
-  quizNo.innerText = `${currentQuizIndex + 1}/${quizList.length}`;
-  if (currentQuizIndex < quizList.length) {
-    showQuiz(quizList[currentQuizIndex]);
+  quizNo.innerText = `${currentQuestionIndex + 1}/${quizList.length}`;
+  if (currentQuestionIndex < quizList.length) {
+    showQuiz(quizList[currentQuestionIndex]);
   } else {
     alert("Đã trả lời hết");
   }
@@ -164,8 +164,8 @@ const showQuiz = (quiz) => {
       toastEl.classList.replace("h-0", "h-20");
 
       setTimeout(() => {
-        currentQuizIndex++;
-        if (currentQuizIndex < quizList.length) {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizList.length) {
           moveOnNextQuiz();
         } else {
           resetAudio(audioCountdownTimer);
@@ -210,37 +210,42 @@ const handleCountdownDoQuiz = () => {
     if (remainingTime > 0) {
       requestAnimationFrameId = requestAnimationFrame(startCountdown);
     } else {
-      currentQuizIndex++;
-      if (currentQuizIndex < quizList.length) {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizList.length) {
         incorrectAnswer++;
         moveOnNextQuiz();
       } else {
+        resetAudio(audioCountdownTimer);
         quizGameContainer.classList.add("hidden");
+        showResultQuizGame(score, countStreak, correctAnswer, incorrectAnswer);
       }
     }
   };
 
-  const stopCountdown = () => {
-    // Đánh dấu mốc thời gian chuyển tab và ngừng đếm ngược
-    stopTime = Date.now();
-    cancelAnimationFrame(requestAnimationFrameId);
-  };
+  // const stopCountdown = () => {
+  //   // Đánh dấu mốc thời gian chuyển tab và ngừng đếm ngược
+  //   stopTime = Date.now();
+  //   cancelAnimationFrame(requestAnimationFrameId);
+  // };
 
-  document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState === "hidden") {
-      stopCountdown();
-      if (!audioCountdownTimer.paused) {
-        audioCountdownTimer.pause();
-      }
-    } else {
-      // Nếu có Stop time thì mới cập nhật lại end time
-      endTime += stopTime ? Date.now() - stopTime : 0;
-      startCountdown();
-      if (audioCountdownTimer.paused) {
-        audioCountdownTimer.play();
-      }
-    }
-  });
+  // document.addEventListener("visibilitychange", function () {
+  //   if (document.visibilityState === "hidden") {
+  //     stopCountdown();
+  //     if (!audioCountdownTimer.paused) {
+  //       audioCountdownTimer.pause();
+  //     }
+  //   } else {
+  //     if (quizGameContainer.classList.contains("hidden")) {
+  //       quizGameContainer.classList.remove("hidden");
+  //     }
+  //     // Nếu có Stop time thì mới cập nhật lại end time
+  //     endTime += stopTime ? Date.now() - stopTime : 0;
+  //     startCountdown();
+  //     if (audioCountdownTimer.paused) {
+  //       audioCountdownTimer.play();
+  //     }
+  //   }
+  // });
   if (requestAnimationFrameId) {
     cancelAnimationFrame(requestAnimationFrameId);
   }
@@ -352,7 +357,7 @@ const showResultQuizGame = (
 const startQuizGame = async () => {
   audioCountdownBegin.pause();
   audioCountdownBegin.currentTime = 0;
-  currentQuizIndex = 0;
+  currentQuestionIndex = 0;
   score = 0;
   streak = 0;
   countStreak = 0;
@@ -360,8 +365,8 @@ const startQuizGame = async () => {
   incorrectAnswer = 0;
   quizScoreEl.innerText = score;
   quizStreakEl.classList.remove("w-1/3", "w-2/3", "w-full");
-  quizNo.innerText = `${currentQuizIndex + 1}/${quizList.length}`;
-  showQuiz(quizList[currentQuizIndex]);
+  quizNo.innerText = `${currentQuestionIndex + 1}/${quizList.length}`;
+  showQuiz(quizList[currentQuestionIndex]);
 };
 
 // Xử lý đếm ngược trước khi bắt đầu trò chơi
