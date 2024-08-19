@@ -84,7 +84,9 @@ const clearStreak = () => {
 
 // Xử lý khi chọn câu trả lời đúng
 const handleChooseCorrectAnswer = () => {
-  audioRightAnswer.play();
+  if (audioCountdownTimer.paused) {
+    audioRightAnswer.play();
+  }
   toastEl.innerText = "Chính xác";
   toastEl.classList.add("bg-green-500");
   score += defaultScore + bonusScore * streak;
@@ -95,7 +97,9 @@ const handleChooseCorrectAnswer = () => {
 
 // Xử lý khi chọn câu trả lời sai
 const handleChooseIncorrectAnswer = () => {
-  audioWrongAnswer.play();
+  if (audioCountdownTimer.paused) {
+    audioWrongAnswer.play();
+  }
   toastEl.innerText = "Chưa chính xác";
   toastEl.classList.add("bg-red-500");
   incorrectAnswer++;
@@ -116,35 +120,28 @@ const moveOnNextQuiz = () => {
   toastEl.classList.remove("bg-red-500", "bg-green-500");
 };
 
+const resetAudio = (audioEl) => {
+  audioEl.pause();
+  audioEl.currentTime = 0;
+};
+
 // Hiển thị câu hỏi và câu trả lời
 const showQuiz = (quiz) => {
   handleCountdownDoQuiz();
-  audioRightAnswer.pause();
-  audioWrongAnswer.pause();
-  audioRightAnswer.currentTime = 0;
-  audioWrongAnswer.currentTime = 0;
-  audioCountdownTimer.currentTime = 0;
-  audioCountdownTimer.play();
+  resetAudio(audioRightAnswer);
+  resetAudio(audioWrongAnswer);
+  resetAudio(audioCountdownTimer);
+  if (audioCountdownTimer.paused) {
+    audioCountdownTimer.play();
+  }
   const { question, answer, total_answer } = quiz;
 
-  let answerStatus = null;
+  let answerStatus = false;
   const answerList = [];
   hasChooseAnswer = false;
   questionEl.innerText = question;
 
-  answerElList.forEach((answerEl, index) => {
-    const { text, correct } = answer[index];
-    answerEl.innerText = text;
-    answerEl.dataset.answer = text;
-    answerEl.dataset.correct = correct;
-
-    // Xóa sự kiện click trước khi gán mới để tránh sự kiện lặp
-    answerEl.removeEventListener("click", handleAnswerClick);
-    // Gán sự kiện click mới
-    answerEl.addEventListener("click", handleAnswerClick);
-  });
-
-  function handleAnswerClick(e) {
+  const handleAnswerClick = (e) => {
     if (hasChooseAnswer) return; // Ngăn chặn việc chọn lại câu trả lời
     audioCountdownTimer.pause();
 
@@ -171,6 +168,7 @@ const showQuiz = (quiz) => {
         if (currentQuizIndex < quizList.length) {
           moveOnNextQuiz();
         } else {
+          resetAudio(audioCountdownTimer);
           quizGameContainer.classList.add("hidden");
           showResultQuizGame(
             score,
@@ -181,7 +179,19 @@ const showQuiz = (quiz) => {
         }
       }, waitingTimeNextQuestion);
     }
-  }
+  };
+
+  answerElList.forEach((answerEl, index) => {
+    const { text, correct } = answer[index];
+    answerEl.innerText = text;
+    answerEl.dataset.answer = text;
+    answerEl.dataset.correct = correct;
+
+    // Xóa sự kiện click trước khi gán mới để tránh sự kiện lặp
+    answerEl.removeEventListener("click", handleAnswerClick);
+    // Gán sự kiện click mới
+    answerEl.addEventListener("click", handleAnswerClick);
+  });
 };
 
 // Xử lý đếm ngược trong khi làm câu hỏi
@@ -194,7 +204,9 @@ const handleCountdownDoQuiz = () => {
     let currentTime = Date.now();
     let remainingTime = Math.max(0, endTime - currentTime);
     const rate = ((remainingTime / limitTimeAnswerQuestion) * 100) / 1000;
-    remainingAnswerTime.style.width = `${rate}%`;
+    if (rate >= 0 && rate <= 100) {
+      remainingAnswerTime.style.width = `${rate}%`;
+    }
     if (remainingTime > 0) {
       requestAnimationFrameId = requestAnimationFrame(startCountdown);
     } else {
@@ -217,14 +229,21 @@ const handleCountdownDoQuiz = () => {
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === "hidden") {
       stopCountdown();
+      if (!audioCountdownTimer.paused) {
+        audioCountdownTimer.pause();
+      }
     } else {
       // Nếu có Stop time thì mới cập nhật lại end time
       endTime += stopTime ? Date.now() - stopTime : 0;
       startCountdown();
+      if (audioCountdownTimer.paused) {
+        audioCountdownTimer.play();
+      }
     }
   });
-
-  cancelAnimationFrame(requestAnimationFrameId);
+  if (requestAnimationFrameId) {
+    cancelAnimationFrame(requestAnimationFrameId);
+  }
   startCountdown();
 };
 
@@ -306,9 +325,17 @@ const showResultQuizGame = (
   incorrectAnswer
 ) => {
   modalResultQuizGame.classList.remove("hidden");
-  resultCorrectRateEl.innerText = `${Math.floor(
-    (correctAnswer / quizList.length) * 100
-  )}%`;
+  const rateRightAnswer = Math.floor((correctAnswer / quizList.length) * 100);
+  resultCorrectRateEl.innerText = `${rateRightAnswer}%`;
+  resultCorrectRateEl.classList.remove("bg-green-500", "bg-red-500");
+  if (rateRightAnswer === 0) {
+    resultCorrectRateEl.style.width = "100%";
+    resultCorrectRateEl.classList.add("bg-red-500");
+  } else {
+    resultCorrectRateEl.style.width = `${rateRightAnswer}%`;
+    resultCorrectRateEl.classList.add("bg-green-500");
+  }
+
   resultScoreEl.innerText = score;
   resultStreakEl.innerText = countStreak;
   resultCorrectEl.innerText = correctAnswer;
