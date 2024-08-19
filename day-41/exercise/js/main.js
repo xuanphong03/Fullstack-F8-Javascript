@@ -146,6 +146,8 @@ const showQuiz = (quiz) => {
 
   function handleAnswerClick(e) {
     if (hasChooseAnswer) return; // Ngăn chặn việc chọn lại câu trả lời
+    audioCountdownTimer.pause();
+
     const { answer } = e.target.dataset;
     if (!answerList.includes(answer)) {
       answerList.push(answer);
