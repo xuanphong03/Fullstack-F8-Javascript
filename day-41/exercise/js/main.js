@@ -26,6 +26,7 @@ const playAgainBtn = document.querySelector(".play-again-btn");
 const audioRightAnswer = document.querySelector(".audio-right-answer");
 const audioWrongAnswer = document.querySelector(".audio-wrong-answer");
 const audioCountdownBegin = document.querySelector(".audio-count-down-begin");
+const audioCountdownTimer = document.querySelector(".audio-count-down-timer");
 
 let score = 0;
 let streak = 0;
@@ -104,6 +105,7 @@ const handleChooseIncorrectAnswer = () => {
 // Chuyển sang câu hỏi tiếp theo
 const moveOnNextQuiz = () => {
   resetQuiz();
+
   quizNo.innerText = `${currentQuizIndex + 1}/${quizList.length}`;
   if (currentQuizIndex < quizList.length) {
     showQuiz(quizList[currentQuizIndex]);
@@ -121,6 +123,8 @@ const showQuiz = (quiz) => {
   audioWrongAnswer.pause();
   audioRightAnswer.currentTime = 0;
   audioWrongAnswer.currentTime = 0;
+  audioCountdownTimer.currentTime = 0;
+  audioCountdownTimer.play();
   const { question, answer, total_answer } = quiz;
 
   let answerStatus = null;
