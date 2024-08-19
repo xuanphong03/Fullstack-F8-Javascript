@@ -1,171 +1,335 @@
-const ANSWER_TIME = 10;
-const MAXIMUM_SCORE_EACH_QUESTIONS = 1000;
-const BONUS_SCORE_FOR_STREAK = 300;
-const WAITING_TIME_BEFORE_START = 4;
-const API_ROOT = " http://localhost:3000";
+const API_ROOT = "https://5lppk6-8080.csb.app";
 
-let CURRENT_QUIZ_INDEX = 0;
-let isCountdownPaused = false;
-let hasAnswered = false;
-let currentQuiz = null;
-let QUIZ_LIST = [];
-const quizQuestionEl = document.querySelector(".quiz-question");
-const quizAnswerItemsListEl = document.querySelectorAll(".quiz-answer-item");
+const quizGameContainer = document.querySelector(".quiz-game-container");
+const questionEl = document.querySelector(".quiz-question");
+const answerElList = document.querySelectorAll(".quiz-answer-item");
+const toastEl = document.querySelector(".toast");
+const quizScoreEl = document.querySelector(".quiz-score");
+const quizStreakEl = document.querySelector(".quiz-streak");
+const quizNo = document.querySelector(".quiz-step");
+const bonusScoreEl = document.querySelector(".bonus-score");
+const remainingAnswerTime = document.querySelector(".remaining-answer-time");
+const startGameBtn = document.querySelector(".start-btn");
+const waitingTimeBeforeStartGameEl = document.querySelector(
+  ".waiting-time-before-starting"
+);
+// Result
+const modalResultQuizGame = document.querySelector(".modal-result");
+const resultCorrectRateEl = document.querySelector(".correct-rate");
+const resultScoreEl = document.querySelector(".result-score");
+const resultStreakEl = document.querySelector(".result-streak");
+const resultCorrectEl = document.querySelector(".result-correct");
+const resultIncorrectEl = document.querySelector(".result-incorrect");
+const playAgainBtn = document.querySelector(".play-again-btn");
 
-// const startBtn = document.querySelector(".start-btn");
-// const waitingTimeBeforeStartEl = document.querySelector(
-//   ".waiting-time-before-starting"
-// );
-// const quizInner = document.querySelector(".quiz-inner");
+// Audio
+const audioRightAnswer = document.querySelector(".audio-right-answer");
+const audioWrongAnswer = document.querySelector(".audio-wrong-answer");
+const audioCountdownBegin = document.querySelector(".audio-count-down-begin");
 
-// const waitingTimeBeforeStart = 4;
+let score = 0;
+let streak = 0;
+let countStreak = 0;
+let correctAnswer = 0;
+let incorrectAnswer = 0;
 
-// const handleStartGame = () => {
-//   startBtn.addEventListener("click", (e) => {
-//     startBtn.classList.add("hidden");
-//     waitingTimeBeforeStartEl.classList.remove("hidden");
-//   });
-// };
+let quizList = [];
+let currentQuizIndex = 0;
+let hasChooseAnswer = false;
+const bonusScore = 100;
+const defaultScore = 1000;
+const limitTimeAnswerQuestion = 10;
+const waitingTimeBeforeStartGame = 3;
+const waitingTimeNextQuestion = 2000;
 
-// const handleCountDownWaitingTime = (waitingTime) => {
-//   const getRemainingTime = (deadline) => {
-//     const currentTime = new Date().getTime();
-//     const remainingTime = Math.floor((deadline - currentTime) / 1000);
-//     return remainingTime;
-//   };
-//   startBtn.addEventListener("click", () => {
-//     const endTime = Date.now() + waitingTime * 1000;
-//     const showTime = () => {
-//       const remainingTime = getRemainingTime(endTime);
-//       waitingTimeBeforeStartEl.innerText = remainingTime;
-//       if (remainingTime > 0) {
-//         requestAnimationFrame(showTime);
-//       } else {
-//         waitingTimeBeforeStartEl.innerText = "GO!";
-//         setTimeout(() => {
-//           waitingTimeBeforeStartEl.classList.add("hidden");
-//           quizInner.classList.remove("hidden");
-//         }, 1000);
-//       }
-//     };
-//     requestAnimationFrame(showTime);
-//   });
-// };
+let requestAnimationFrameId;
+let isPauseCountdown = false;
 
-// handleStartGame();
-// handleCountDownWaitingTime(waitingTimeBeforeStart);
-
-const resetQuizUI = () => {
-  quizAnswerItemsListEl.forEach((answerEl) => {
-    answerEl.classList.remove("bg-red-500", "bg-green-500");
-    delete answerEl.dataset.correct;
-  });
-  hasAnswered = false;
-  isCountdownPaused = false;
+const getQuiz = async () => {
+  try {
+    const response = await fetch(`${API_ROOT}/quiz`);
+    if (!response.ok) {
+      throw new Error("Lấy dữ liệu Quiz thất bại");
+    }
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const showQuiz = (quizList, currentQuizIndex) => {
-  currentQuiz = quizList[currentQuizIndex];
-  console.log(currentQuiz);
-  const { question, answer } = currentQuiz;
-  // Hiển thị câu hỏi
-  quizQuestionEl.innerText = question;
-  // Hiển thị câu trả lời
-  quizAnswerItemsListEl.forEach((answerEl, index) => {
+// Tăng chuỗi khi trả lời đúng
+const increaseStreak = () => {
+  // Trả lời đúng 3 câu liên tiếp trở lên thì tăng 1 streak :v
+  if (streak === 1) {
+    countStreak++;
+  }
+  streak++;
+  quizStreakEl.classList.remove("w-1/3", "w-2/3", "w-full");
+  if (streak >= 3) {
+    quizStreakEl.classList.add("w-full");
+    bonusScoreEl.innerText = "+300";
+  } else {
+    quizStreakEl.classList.add(`w-${streak}/3`);
+    bonusScoreEl.innerText = `+${bonusScore * streak}`;
+  }
+};
+
+// Xóa chuỗi khi trả lời sai
+const clearStreak = () => {
+  streak = 0;
+  quizStreakEl.classList.remove("w-1/3", "w-2/3", "w-full");
+  bonusScoreEl.innerText = "";
+};
+
+// Xử lý khi chọn câu trả lời đúng
+const handleChooseCorrectAnswer = () => {
+  audioRightAnswer.play();
+  toastEl.innerText = "Chính xác";
+  toastEl.classList.add("bg-green-500");
+  score += defaultScore + bonusScore * streak;
+  quizScoreEl.innerText = score;
+  correctAnswer++;
+  increaseStreak();
+};
+
+// Xử lý khi chọn câu trả lời sai
+const handleChooseIncorrectAnswer = () => {
+  audioWrongAnswer.play();
+  toastEl.innerText = "Chưa chính xác";
+  toastEl.classList.add("bg-red-500");
+  incorrectAnswer++;
+  clearStreak();
+};
+
+// Chuyển sang câu hỏi tiếp theo
+const moveOnNextQuiz = () => {
+  resetQuiz();
+  quizNo.innerText = `${currentQuizIndex + 1}/${quizList.length}`;
+  if (currentQuizIndex < quizList.length) {
+    showQuiz(quizList[currentQuizIndex]);
+  } else {
+    alert("Đã trả lời hết");
+  }
+  toastEl.classList.replace("h-20", "h-0");
+  toastEl.classList.remove("bg-red-500", "bg-green-500");
+};
+
+// Hiển thị câu hỏi và câu trả lời
+const showQuiz = (quiz) => {
+  handleCountdownDoQuiz();
+  audioRightAnswer.pause();
+  audioWrongAnswer.pause();
+  audioRightAnswer.currentTime = 0;
+  audioWrongAnswer.currentTime = 0;
+  const { question, answer, total_answer } = quiz;
+
+  let answerStatus = null;
+  const answerList = [];
+  hasChooseAnswer = false;
+  questionEl.innerText = question;
+
+  answerElList.forEach((answerEl, index) => {
     const { text, correct } = answer[index];
     answerEl.innerText = text;
+    answerEl.dataset.answer = text;
     answerEl.dataset.correct = correct;
+
+    // Xóa sự kiện click trước khi gán mới để tránh sự kiện lặp
+    answerEl.removeEventListener("click", handleAnswerClick);
+    // Gán sự kiện click mới
+    answerEl.addEventListener("click", handleAnswerClick);
   });
+
+  function handleAnswerClick(e) {
+    if (hasChooseAnswer) return; // Ngăn chặn việc chọn lại câu trả lời
+    const { answer } = e.target.dataset;
+    if (!answerList.includes(answer)) {
+      answerList.push(answer);
+      e.target.classList.add("bg-blue-500");
+      cancelAnimationFrame(requestAnimationFrameId);
+    }
+
+    if (answerList.length === total_answer) {
+      hasChooseAnswer = true;
+      answerStatus = checkAnswerOfUser();
+      showCorrectAnswer();
+      if (answerStatus) {
+        handleChooseCorrectAnswer();
+      } else {
+        handleChooseIncorrectAnswer();
+      }
+      toastEl.classList.replace("h-0", "h-20");
+
+      setTimeout(() => {
+        currentQuizIndex++;
+        if (currentQuizIndex < quizList.length) {
+          moveOnNextQuiz();
+        } else {
+          quizGameContainer.classList.add("hidden");
+          showResultQuizGame(
+            score,
+            countStreak,
+            correctAnswer,
+            incorrectAnswer
+          );
+        }
+      }, waitingTimeNextQuestion);
+    }
+  }
 };
 
-const handleChooseAnswer = () => {
-  let countAnswer = 0;
-  quizAnswerItemsListEl.forEach((answerEl) => {
-    answerEl.addEventListener("click", (e) => {
-      if (currentQuiz.total_answer === countAnswer && hasAnswered) return;
+// Xử lý đếm ngược trong khi làm câu hỏi
+const handleCountdownDoQuiz = () => {
+  let startTime = Date.now();
+  let endTime = startTime + limitTimeAnswerQuestion * 1000;
+  let stopTime;
 
-      const { correct } = e.target.dataset;
-      if (correct === "true") {
+  const startCountdown = () => {
+    let currentTime = Date.now();
+    let remainingTime = Math.max(0, endTime - currentTime);
+    const rate = ((remainingTime / limitTimeAnswerQuestion) * 100) / 1000;
+    remainingAnswerTime.style.width = `${rate}%`;
+    if (remainingTime > 0) {
+      requestAnimationFrameId = requestAnimationFrame(startCountdown);
+    } else {
+      currentQuizIndex++;
+      if (currentQuizIndex < quizList.length) {
+        incorrectAnswer++;
+        moveOnNextQuiz();
+      } else {
+        quizGameContainer.classList.add("hidden");
+      }
+    }
+  };
+
+  const stopCountdown = () => {
+    // Đánh dấu mốc thời gian chuyển tab và ngừng đếm ngược
+    stopTime = Date.now();
+    cancelAnimationFrame(requestAnimationFrameId);
+  };
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") {
+      stopCountdown();
+    } else {
+      // Nếu có Stop time thì mới cập nhật lại end time
+      endTime += stopTime ? Date.now() - stopTime : 0;
+      startCountdown();
+    }
+  });
+
+  cancelAnimationFrame(requestAnimationFrameId);
+  startCountdown();
+};
+
+// Kiểm tra câu trả lời của người dùng
+const checkAnswerOfUser = () => {
+  let answerStatus = true;
+  answerElList.forEach((answerEl) => {
+    const isCorrect = answerEl.dataset.correct === "true";
+    if (answerEl.classList.contains("bg-blue-500")) {
+      answerEl.classList.remove("bg-blue-500");
+      if (isCorrect) {
         answerEl.classList.add("bg-green-500");
       } else {
         answerEl.classList.add("bg-red-500");
+        answerStatus = false;
       }
-      countAnswer++;
-      // Hiển thị đáp án
-      showCorrectAnswer();
-      isCountdownPaused = true;
-      if (currentQuiz.total_answer === countAnswer) {
-        hasAnswered = true;
-
-        // Chuyển câu hỏi sau 2 giây
-        setTimeout(() => {
-          resetQuizUI();
-          CURRENT_QUIZ_INDEX++;
-          if (CURRENT_QUIZ_INDEX < QUIZ_LIST.length) {
-            showQuiz(QUIZ_LIST, CURRENT_QUIZ_INDEX);
-            handleChooseAnswer();
-          } else {
-            // Xử lý kết thúc quiz ở đây nếu cần
-            alert("Quiz hoàn thành!");
-          }
-        }, 2000);
-      }
-    });
+    }
   });
+  return answerStatus;
 };
 
+// Reset câu hỏi
+const resetQuiz = () => {
+  answerElList.forEach((answerEl) => {
+    answerEl.classList.remove("bg-red-500", "bg-green-500");
+    delete answerEl.dataset.correct;
+  });
+  hasChooseAnswer = false;
+};
+
+// Hiển thị câu trả lời đúng
 const showCorrectAnswer = () => {
-  quizAnswerItemsListEl.forEach((answerEl) => {
-    const isCorrectAnswer = answerEl.dataset.correct === "true";
-    if (isCorrectAnswer) {
+  answerElList.forEach((answerEl) => {
+    const isCorrect = answerEl.dataset.correct === "true";
+    if (isCorrect) {
       answerEl.classList.add("bg-green-500");
     }
   });
 };
 
-// const handleGetRemainingTime = (endTime) => {
-//   const currentTime = new Date().getTime();
-//   const remainingTime = (endTime - currentTime) / 1000;
-//   return remainingTime;
-// };
+// Xử lý đếm ngược trước khi bắt đầu trò chơi
+const handleCountDownWaitingTime = async (time) => {
+  // Lấy dữ liệu trong thời gian chờ tránh tình trạng loading chưa xong
+  quizList = await getQuiz();
 
-// const handleCountDownAnswerTime = (answerTime) => {
-//   const remainingTimeAnswerEl = document.querySelector(
-//     ".remaining-answer-time"
-//   );
-//   const endTime = Date.now() + answerTime * 1000;
-//   const countDownAnswerTime = () => {
-//     if (isCountdownPaused) return;
-
-//     const remainingTime = handleGetRemainingTime(endTime);
-//     const progress = (remainingTime / answerTime) * 100;
-//     remainingTimeAnswerEl.style.width = `${progress}%`;
-//     if (progress > 0) {
-//       requestAnimationFrame(countDownAnswerTime);
-//     } else {
-//       remainingTimeAnswerEl.style.width = "0px";
-//       // Đổi câu hỏi
-//     }
-//   };
-//   requestAnimationFrame(countDownAnswerTime);
-// };
-
-const handleGetAllQuiz = async (query) => {
-  try {
-    const queryParams = new URLSearchParams({ ...query }).toString();
-    const response = await fetch(`${API_ROOT}/quiz?${queryParams}`);
-    if (!response.ok) {
-      throw new Error("Get all quiz bị lỗi");
-    }
-    const quizList = await response.json();
-    return quizList;
-  } catch {}
+  const getRemainingTime = (deadline) => {
+    const currentTime = new Date().getTime();
+    const remainingTime = Math.floor((deadline - currentTime) / 1000);
+    return remainingTime;
+  };
+  startGameBtn.addEventListener("click", () => {
+    audioCountdownBegin.play();
+    startGameBtn.classList.add("hidden");
+    waitingTimeBeforeStartGameEl.classList.remove("hidden");
+    const endTime = Date.now() + time * 1000;
+    const showTime = () => {
+      const remainingTime = getRemainingTime(endTime);
+      waitingTimeBeforeStartGameEl.innerText = remainingTime + 1;
+      if (remainingTime >= 0) {
+        requestAnimationFrame(showTime);
+      } else {
+        waitingTimeBeforeStartGameEl.innerText = "GO!";
+        setTimeout(() => {
+          quizGameContainer.classList.remove("hidden");
+          waitingTimeBeforeStartGameEl.classList.add("hidden");
+          startQuizGame();
+        }, 1000);
+      }
+    };
+    requestAnimationFrame(showTime);
+  });
 };
 
-const handleStartGame = async () => {
-  QUIZ_LIST = await handleGetAllQuiz();
-  showQuiz(QUIZ_LIST, CURRENT_QUIZ_INDEX);
+// Hiển thị kết quả trò chơi
+const showResultQuizGame = (
+  score,
+  countStreak,
+  correctAnswer,
+  incorrectAnswer
+) => {
+  modalResultQuizGame.classList.remove("hidden");
+  resultCorrectRateEl.innerText = `${Math.floor(
+    (correctAnswer / quizList.length) * 100
+  )}%`;
+  resultScoreEl.innerText = score;
+  resultStreakEl.innerText = countStreak;
+  resultCorrectEl.innerText = correctAnswer;
+  resultIncorrectEl.innerText = incorrectAnswer;
+
+  playAgainBtn.addEventListener("click", () => {
+    startGameBtn.classList.remove("hidden");
+    modalResultQuizGame.classList.add("hidden");
+    startQuizGame();
+  });
 };
 
-handleStartGame();
-handleChooseAnswer();
+// Bắt đầu trò chơi
+const startQuizGame = async () => {
+  audioCountdownBegin.pause();
+  audioCountdownBegin.currentTime = 0;
+  currentQuizIndex = 0;
+  score = 0;
+  streak = 0;
+  countStreak = 0;
+  correctAnswer = 0;
+  incorrectAnswer = 0;
+  quizScoreEl.innerText = score;
+  quizStreakEl.classList.remove("w-1/3", "w-2/3", "w-full");
+  quizNo.innerText = `${currentQuizIndex + 1}/${quizList.length}`;
+  showQuiz(quizList[currentQuizIndex]);
+};
+
+// Xử lý đếm ngược trước khi bắt đầu trò chơi
+handleCountDownWaitingTime(waitingTimeBeforeStartGame);

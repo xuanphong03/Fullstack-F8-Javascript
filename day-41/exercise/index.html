@@ -11,7 +11,7 @@
       <div
         class="start-modal relative bg-no-repeat bg-cover h-full bg-[url('https://example01.f8.edu.vn/quiz/static/media/background.9d9912f8005511120746.jpg')]"
       >
-        <!-- <button
+        <button
           class="start-btn cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white px-5 py-3 text-5xl border-2 border-solid border-white flex justify-center items-center rounded-lg"
         >
           Start
@@ -20,9 +20,9 @@
           class="waiting-time-before-starting hidden cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white px-5 py-8 text-5xl w-full text-center bg-black"
         >
           3
-        </div> -->
+        </div>
       </div>
-      <div class="quiz-game-container">
+      <div class="quiz-game-container hidden">
         <div class="absolute top-0 left-0 right-0 h-20 bg-black z-10 px-5 py-1">
           <div
             class="remaining-answer-time-box w-full h-[5px] rounded-lg bg-transparent"
@@ -114,8 +114,61 @@
           </ul>
         </div>
       </div>
+      <div
+        class="modal-result hidden absolute w-[500px] top-0 bottom-0 bg-[rgba(0,0,0,0.5)] p-5 left-1/2 -translate-x-1/2"
+      >
+        <div class="w-full mb-5">
+          <h2 class="text-sm text-center mb-3">Accuracy</h2>
+          <div class="bg-red-500 rounded-lg overflow-hidden">
+            <div class="correct-rate bg-green-500 text-center text-sm"></div>
+          </div>
+        </div>
+        <div class="flex flex-wrap">
+          <div class="basis-1/2 p-4">
+            <div
+              class="bg-black h-20 flex flex-col justify-center items-center"
+            >
+              <h2 class="result-score text-3xl">1000</h2>
+              <h3 class="text-sm text-gray-400">Score</h3>
+            </div>
+          </div>
+          <div class="basis-1/2 p-4">
+            <div
+              class="bg-black h-20 flex flex-col justify-center items-center"
+            >
+              <h2 class="result-streak text-3xl">1</h2>
+              <h3 class="text-sm text-gray-400">Streak</h3>
+            </div>
+          </div>
+          <div class="basis-1/2 p-4">
+            <div
+              class="bg-black h-20 flex flex-col justify-center items-center"
+            >
+              <h2 class="result-correct text-3xl">0</h2>
+              <h3 class="text-sm text-gray-400">Correct</h3>
+            </div>
+          </div>
+          <div class="basis-1/2 p-4">
+            <div
+              class="bg-black h-20 flex flex-col justify-center items-center"
+            >
+              <h2 class="result-incorrect text-3xl">0</h2>
+              <h3 class="text-sm text-gray-400">Incorrect</h3>
+            </div>
+          </div>
+        </div>
+        <button class="play-again-btn w-full h-10 bg-green-500 rounded-lg">
+          Play again
+        </button>
+      </div>
     </div>
+    <audio class="audio-right-answer" src="./audio/rightAnswer.mp3"></audio>
+    <audio class="audio-wrong-answer" src="./audio/wrongAnswer.mp3"></audio>
+    <audio
+      class="audio-count-down-begin"
+      src="./audio/countDownBegin.mp3"
+    ></audio>
     <!-- <script src="./js/main.js"></script> -->
-    <script src="./js/main2.js"></script>
+    <script src="./js/main.js"></script>
   </body>
 </html>
