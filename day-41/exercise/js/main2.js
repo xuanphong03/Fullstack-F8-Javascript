@@ -106,11 +106,10 @@ const showQuiz = (quiz) => {
       const { answer } = e.target.dataset;
       if (!answerList.includes(answer)) {
         answerList.push(answer);
+        answerEl.classList.add("bg-blue-500");
+        cancelAnimationFrame(requestAnimationFrameId);
       }
-      answerEl.classList.add("bg-blue-500");
-      console.log("Cancel", requestAnimationFrameId);
 
-      cancelAnimationFrame(requestAnimationFrameId);
       if (answerList.length === total_answer) {
         hasChooseAnswer = true;
         answerStatus = checkAnswerOfUser();
