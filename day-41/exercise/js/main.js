@@ -211,8 +211,8 @@ const handleCountdownDoQuiz = () => {
       requestAnimationFrameId = requestAnimationFrame(startCountdown);
     } else {
       currentQuestionIndex++;
+      incorrectAnswer++;
       if (currentQuestionIndex < quizList.length) {
-        incorrectAnswer++;
         moveOnNextQuiz();
       } else {
         resetAudio(audioCountdownTimer);
@@ -349,6 +349,7 @@ const showResultQuizGame = (
   playAgainBtn.addEventListener("click", () => {
     startGameBtn.classList.remove("hidden");
     modalResultQuizGame.classList.add("hidden");
+    resetAudio(audioCountdownTimer);
     startQuizGame();
   });
 };
