@@ -210,6 +210,8 @@ const handleCountdownDoQuiz = () => {
     if (remainingTime > 0) {
       requestAnimationFrameId = requestAnimationFrame(startCountdown);
     } else {
+      console.log("Trôi vào đây");
+
       currentQuestionIndex++;
       incorrectAnswer++;
       if (currentQuestionIndex < quizList.length) {
@@ -235,9 +237,6 @@ const handleCountdownDoQuiz = () => {
   //       audioCountdownTimer.pause();
   //     }
   //   } else {
-  //     if (quizGameContainer.classList.contains("hidden")) {
-  //       quizGameContainer.classList.remove("hidden");
-  //     }
   //     // Nếu có Stop time thì mới cập nhật lại end time
   //     endTime += stopTime ? Date.now() - stopTime : 0;
   //     startCountdown();
@@ -322,6 +321,18 @@ const handleCountDownWaitingTime = async (time) => {
   });
 };
 
+// Reset Data
+const resetData = () => {
+  currentQuestionIndex = 0;
+  score = 0;
+  streak = 0;
+  countStreak = 0;
+  correctAnswer = 0;
+  incorrectAnswer = 0;
+  quizScoreEl.innerText = score;
+  quizStreakEl.classList.remove("w-1/3", "w-2/3", "w-full");
+};
+
 // Hiển thị kết quả trò chơi
 const showResultQuizGame = (
   score,
@@ -350,22 +361,13 @@ const showResultQuizGame = (
     startGameBtn.classList.remove("hidden");
     modalResultQuizGame.classList.add("hidden");
     resetAudio(audioCountdownTimer);
-    startQuizGame();
+    resetData();
   });
 };
 
 // Bắt đầu trò chơi
 const startQuizGame = async () => {
-  audioCountdownBegin.pause();
-  audioCountdownBegin.currentTime = 0;
-  currentQuestionIndex = 0;
-  score = 0;
-  streak = 0;
-  countStreak = 0;
-  correctAnswer = 0;
-  incorrectAnswer = 0;
-  quizScoreEl.innerText = score;
-  quizStreakEl.classList.remove("w-1/3", "w-2/3", "w-full");
+  resetData();
   quizNo.innerText = `${currentQuestionIndex + 1}/${quizList.length}`;
   showQuiz(quizList[currentQuestionIndex]);
 };
