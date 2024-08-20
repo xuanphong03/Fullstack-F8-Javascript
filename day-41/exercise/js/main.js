@@ -39,7 +39,7 @@ let currentQuestionIndex = 0;
 let hasChooseAnswer = false;
 const bonusScore = 100;
 const defaultScore = 1000;
-const limitTimeAnswerQuestion = 10;
+const limitTimeAnswerQuestion = 5;
 const waitingTimeBeforeStartGame = 3;
 const waitingTimeNextQuestion = 2000;
 
@@ -84,7 +84,7 @@ const clearStreak = () => {
 
 // Xử lý khi chọn câu trả lời đúng
 const handleChooseCorrectAnswer = () => {
-  if (audioCountdownTimer.paused) {
+  if (audioRightAnswer.paused) {
     audioRightAnswer.play();
   }
   toastEl.innerText = "Chính xác";
@@ -97,7 +97,7 @@ const handleChooseCorrectAnswer = () => {
 
 // Xử lý khi chọn câu trả lời sai
 const handleChooseIncorrectAnswer = () => {
-  if (audioCountdownTimer.paused) {
+  if (audioWrongAnswer.paused) {
     audioWrongAnswer.play();
   }
   toastEl.innerText = "Chưa chính xác";
@@ -109,7 +109,6 @@ const handleChooseIncorrectAnswer = () => {
 // Chuyển sang câu hỏi tiếp theo
 const moveOnNextQuiz = () => {
   resetQuiz();
-
   quizNo.innerText = `${currentQuestionIndex + 1}/${quizList.length}`;
   if (currentQuestionIndex < quizList.length) {
     showQuiz(quizList[currentQuestionIndex]);
@@ -321,8 +320,12 @@ const handleCountDownWaitingTime = async (time) => {
   });
 };
 
-// Reset Data
-const resetData = () => {
+// Reset game
+const resetGame = () => {
+  resetAudio(audioRightAnswer);
+  resetAudio(audioWrongAnswer);
+  resetAudio(audioCountdownBegin);
+  resetAudio(audioCountdownTimer);
   currentQuestionIndex = 0;
   score = 0;
   streak = 0;
@@ -360,14 +363,13 @@ const showResultQuizGame = (
   playAgainBtn.addEventListener("click", () => {
     startGameBtn.classList.remove("hidden");
     modalResultQuizGame.classList.add("hidden");
-    resetAudio(audioCountdownTimer);
-    resetData();
+    resetGame();
   });
 };
 
 // Bắt đầu trò chơi
 const startQuizGame = async () => {
-  resetData();
+  resetGame();
   quizNo.innerText = `${currentQuestionIndex + 1}/${quizList.length}`;
   showQuiz(quizList[currentQuestionIndex]);
 };
