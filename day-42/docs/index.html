@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authentication và Authorization</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="w-50 mx-auto py-3 root">
+      <!-- <h2 class="text-center">Đăng nhập</h2>
+      <form action="" class="login">
+        <div class="mb-3">
+          <label for="">Email</label>
+          <input
+            type="email"
+            name="email"
+            class="form-control"
+            placeholder="Email"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="">Mật khẩu</label>
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            placeholder="Password"
+          />
+        </div>
+        <div class="d-grid">
+          <button class="btn btn-primary">Đăng nhập</button>
+        </div>
+      </form> -->
+      <!-- <div class="profile">
+        <h2>Chào mừng bạn đã quay trở lại với F8</h2>
+        <ul class="list-unstyled d-flex gap-2">
+          <li>Chào bạn: Xuân Phong</li>
+          <li><a href="#">Đăng xuất</a></li>
+        </ul>
+      </div> -->
+    </div>
+    <div
+      class="modal-loading invisible opacity-0 loading position-fixed top-0 start-0 end-0 bottom-0"
+    >
+      <div
+        class="bg-black opacity-50 position-fixed top-0 start-0 end-0 bottom-0 z-1"
+      ></div>
+      <div
+        class="position-fixed bg-transparent top-0 start-0 end-0 bottom-0 z-2 d-flex justify-content-center align-items-center"
+      >
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./js/authen-author.js"></script>
+  </body>
+</html>
