@@ -357,7 +357,7 @@ const handleCreateBlog = () => {
         </div>
       </form>
     `;
-      root.append(createBlogForm);
+      root.append(createBlogFormContainerEl);
       handleCloseForm();
       handleCreateNewBlog();
     });
