@@ -383,6 +383,9 @@ const handleCreateBlog = () => {
         const hasError = validateForm(e.target);
         if (!hasError) {
           const createBlog = async () => {
+            const createBlogFormContainerEl = document.querySelector(
+              ".create-blog-form-container"
+            );
             try {
               const { accessToken, refreshToken } = JSON.parse(
                 localStorage.getItem("user_token")
@@ -407,10 +410,8 @@ const handleCreateBlog = () => {
                 localStorage.setItem("user_token", JSON.stringify(newToken));
                 await createBlog(); // Gọi lại requestCreateBlog với token mới
               } else {
-                const createBlogFormEl =
-                  document.querySelector(".create-blog-form");
-                if (createBlogFormEl) {
-                  createBlogFormEl.remove();
+                if (createBlogFormContainerEl) {
+                  createBlogFormContainerEl.remove();
                 }
                 blogs.unshift(newBlog);
                 renderBlogs(blogs);
@@ -418,8 +419,8 @@ const handleCreateBlog = () => {
             } catch (error) {
               alert("Sorry. Phiên đăng nhập đã hết hạn (handle create blog)");
               localStorage.removeItem("user_token");
-              if (createBlogFormEl) {
-                createBlogFormEl.remove();
+              if (createBlogFormContainerEl) {
+                createBlogFormContainerEl.remove();
               }
             }
           };
