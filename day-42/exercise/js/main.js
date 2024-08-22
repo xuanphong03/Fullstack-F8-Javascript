@@ -192,6 +192,7 @@ const renderHomePage = () => {
       } catch (error) {
         alert("Sorry. Phiên đăng nhập đã hết hạn");
         localStorage.removeItem("user_token");
+        renderHomePage();
       }
     };
     getProfile();

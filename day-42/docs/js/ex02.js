@@ -2,6 +2,7 @@
 let token = "My token";
 let isExpire = false;
 let refreshTokenPromise = null;
+
 const refreshToken = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
