@@ -177,7 +177,7 @@ const renderHomePage = () => {
           const {
             data: { token: newToken },
           } = await requestRefreshToken(refreshToken);
-          console.log(">>> New token: ", newToken);
+          console.log(">>> New token (get profile): ", newToken);
           if (!newToken) {
             throw new Error("Unauthorize");
           }
@@ -316,9 +316,9 @@ const handleCreateBlog = () => {
 
   if (createBlogBtn) {
     createBlogBtn.addEventListener("click", (e) => {
-      const createBlogForm = document.createElement("div");
-      createBlogForm.classList.add(
-        "create-blog-form",
+      const createBlogFormContainerEl = document.createElement("div");
+      createBlogFormContainerEl.classList.add(
+        "create-blog-form-container",
         "fixed",
         "inset-0",
         "flex",
@@ -328,8 +328,8 @@ const handleCreateBlog = () => {
         "bg-[rgba(0,0,0,0.4)]",
         "z-[99999]"
       );
-      createBlogForm.innerHTML = `
-      <form class='w-[600px] bg-white px-5 py-3 rounded'>
+      createBlogFormContainerEl.innerHTML = `
+      <form class='create-blog-form-inner w-[600px] bg-white px-5 py-3 rounded'>
         <div class='flex flex-col gap-1 mb-4'>
           <label for='blog-title'>Tên tiêu đề</label>
           <input
@@ -359,67 +359,74 @@ const handleCreateBlog = () => {
     `;
       root.append(createBlogForm);
       handleCloseForm();
+      handleCreateNewBlog();
     });
 
     const handleCloseForm = () => {
       const cancelBtn = document.querySelector(".cancel-btn");
       cancelBtn.addEventListener("click", (e) => {
-        const createBlogFormEl = document.querySelector(".create-blog-form");
-        if (createBlogFormEl) {
-          createBlogFormEl.remove();
+        const createBlogFormContainerEl = document.querySelector(
+          ".create-blog-form-container"
+        );
+        if (createBlogFormContainerEl) {
+          createBlogFormContainerEl.remove();
         }
       });
     };
+    const handleCreateNewBlog = () => {
+      const createBlogFormInnerEl = document.querySelector(
+        ".create-blog-form-inner"
+      );
+      createBlogFormInnerEl.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = Object.fromEntries(new FormData(e.target));
+        const hasError = validateForm(e.target);
+        if (!hasError) {
+          const createBlog = async () => {
+            try {
+              const { accessToken, refreshToken } = JSON.parse(
+                localStorage.getItem("user_token")
+              );
+              handleLoading(true);
+              const { data: newBlog } = await requestCreateBlog(
+                accessToken,
+                formData
+              );
+              handleLoading(false);
+              // Nếu ko lấy được blog data => refresh token
+              if (!newBlog) {
+                const {
+                  data: { token: newToken },
+                } = await requestRefreshToken(refreshToken);
+                console.log(">>> New Token (create blog): ", newToken);
 
-    root.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const formData = Object.fromEntries(new FormData(e.target));
-      const hasError = validateForm(e.target);
-      if (!hasError) {
-        const createBlog = async () => {
-          try {
-            const { accessToken, refreshToken } = JSON.parse(
-              localStorage.getItem("user_token")
-            );
-            handleLoading(true);
-            const { data: newBlog } = await requestCreateBlog(
-              accessToken,
-              formData
-            );
-            handleLoading(false);
-            // Nếu ko lấy được blog data => refresh token
-            if (!newBlog) {
-              const {
-                data: { token: newToken },
-              } = await requestRefreshToken(refreshToken);
-              console.log(">>> New Token (create blog): ", newToken);
-
-              if (!newToken) {
-                throw new Error("Unauthorize");
+                if (!newToken) {
+                  throw new Error("Unauthorize");
+                }
+                // Lưu vào localStorage
+                localStorage.setItem("user_token", JSON.stringify(newToken));
+                await createBlog(); // Gọi lại requestCreateBlog với token mới
+              } else {
+                const createBlogFormEl =
+                  document.querySelector(".create-blog-form");
+                if (createBlogFormEl) {
+                  createBlogFormEl.remove();
+                }
+                blogs.unshift(newBlog);
+                renderBlogs(blogs);
               }
-              // Lưu vào localStorage
-              localStorage.setItem("user_token", JSON.stringify(newToken));
-              await createBlog(); // Gọi lại requestCreateBlog với token mới
-            } else {
-              const createBlogFormEl =
-                document.querySelector(".create-blog-form");
+            } catch (error) {
+              alert("Sorry. Phiên đăng nhập đã hết hạn (handle create blog)");
+              localStorage.removeItem("user_token");
               if (createBlogFormEl) {
                 createBlogFormEl.remove();
               }
-              blogs.unshift(newBlog);
-              renderBlogs(blogs);
             }
-          } catch (error) {
-            alert("Sorry. Đã hết phiên đăng nhập");
-            localStorage.removeItem("user_token");
-            if (createBlogFormEl) {
-              createBlogFormEl.remove();
-            }
-          }
-        };
-        createBlog();
-      }
-    });
+          };
+          createBlog();
+        }
+      });
+    };
   }
 };
 
@@ -508,6 +515,7 @@ const handleSubmitForm = () => {
             } else {
               const registerFormEl = document.querySelector(".register-form");
               registerFormEl.remove();
+              renderLoginForm();
             }
             formEl.reset();
           }
