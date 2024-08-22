@@ -389,7 +389,11 @@ const handleCreateBlog = () => {
             handleLoading(false);
             // Nếu ko lấy được blog data => refresh token
             if (!newBlog) {
-              const newToken = await requestRefreshToken(refreshToken);
+              const {
+                data: { token: newToken },
+              } = await requestRefreshToken(refreshToken);
+              console.log(">>> New Token (create blog): ", newToken);
+
               if (!newToken) {
                 throw new Error("Unauthorize");
               }
