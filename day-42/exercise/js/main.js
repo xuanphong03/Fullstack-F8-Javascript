@@ -212,11 +212,12 @@ const handleLogoutAccount = () => {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async (e) => {
       e.preventDefault();
+      localStorage.removeItem("user_token");
+      // Reset blogs and rerender
       blogs = [];
       params.page = 1;
-      localStorage.removeItem("user_token");
       renderHomePage();
-      const response = await requestLogout(accessToken);
+      await requestLogout(accessToken);
     });
   }
 };
@@ -315,7 +316,7 @@ const handleCreateBlog = () => {
   const createBlogBtn = document.querySelector(".create-blog-btn");
 
   if (createBlogBtn) {
-    createBlogBtn.addEventListener("click", (e) => {
+    createBlogBtn.addEventListener("click", () => {
       const createBlogFormContainerEl = document.createElement("div");
       createBlogFormContainerEl.classList.add(
         "create-blog-form-container",
@@ -358,31 +359,34 @@ const handleCreateBlog = () => {
       </form>
     `;
       root.append(createBlogFormContainerEl);
-      handleCloseForm();
       handleCreateNewBlog();
-    });
 
-    const handleCloseForm = () => {
-      const cancelBtn = document.querySelector(".cancel-btn");
-      cancelBtn.addEventListener("click", (e) => {
-        const createBlogFormContainerEl = document.querySelector(
-          ".create-blog-form-container"
-        );
+      const cancelBtn = createBlogFormContainerEl.querySelector(".cancel-btn");
+      cancelBtn.addEventListener("click", () => {
+        console.log("Click");
+
         if (createBlogFormContainerEl) {
           createBlogFormContainerEl.remove();
         }
       });
-    };
+    });
+
     const handleCreateNewBlog = () => {
       const createBlogFormInnerEl = document.querySelector(
         ".create-blog-form-inner"
       );
+      console.log("Form Inner El: ", createBlogFormInnerEl);
+
       createBlogFormInnerEl.addEventListener("submit", (e) => {
         e.preventDefault();
+        console.log(">>> Gán sự kiện submit");
+
         const formData = Object.fromEntries(new FormData(e.target));
         const hasError = validateForm(e.target);
         if (!hasError) {
           const createBlog = async () => {
+            console.log(">>> Create new blog!", formData);
+
             const createBlogFormContainerEl = document.querySelector(
               ".create-blog-form-container"
             );
@@ -608,6 +612,6 @@ const handleInfinityScroll = () => {
   observer.observe(endBlogsListEl);
 };
 
-handleClickLoginBtn();
 renderHomePage();
+handleClickLoginBtn();
 handleInfinityScroll();

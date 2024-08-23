@@ -71,7 +71,6 @@ export const requestLogout = async (accessToken) => {
     const response = await fetch(`${SERVER_API}/auth/logout`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({}),
