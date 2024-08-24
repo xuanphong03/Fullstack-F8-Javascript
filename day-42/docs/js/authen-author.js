@@ -45,33 +45,38 @@ const render = async () => {
       </div>
     `;
     const getProfile = async () => {
-      try {
-        const { access_token: accessToken, refresh_token: refreshToken } =
-          JSON.parse(localStorage.getItem("user_token"));
-        console.log("Access Token: ", accessToken);
-        console.log("Refresh Token: ", refreshToken);
-
-        const profile = await requestProfile(accessToken);
-        if (!profile) {
-          // throw new Error("Unauthorize");
-          // Xử lý gọi refresh token
-          const newToken = await requestRefreshToken(refreshToken);
-          console.log(newToken);
-          if (!newToken) {
-            throw new Error("Unauthorize");
-            // Đăng xuất
-          }
-          // Lưu vào localStorage
-          localStorage.setItem("user_token", JSON.stringify(newToken));
-          getProfile();
-          // Gọi lại requestProfile
-        } else {
-          const nameEl = document.querySelector(".name");
-          nameEl.innerText = profile.name;
-        }
-      } catch (error) {
-        localStorage.removeItem("user_token");
-        render();
+      // try {
+      // const { access_token: accessToken, refresh_token: refreshToken } =
+      //   JSON.parse(localStorage.getItem("user_token"));
+      // const profile = await requestProfile(accessToken);
+      // if (!profile) {
+      //   // throw new Error("Unauthorize");
+      //   // Xử lý gọi refresh token
+      //   const newToken = await requestRefreshToken(refreshToken);
+      //   if (!newToken) {
+      //     throw new Error("Unauthorize");
+      //     // Đăng xuất
+      //   }
+      //   // Lưu vào localStorage
+      //   localStorage.setItem("user_token", JSON.stringify(newToken));
+      //   getProfile();
+      //   // Gọi lại requestProfile
+      // } else {
+      //   const nameEl = document.querySelector(".name");
+      //   nameEl.innerText = profile.name;
+      // }
+      //   if (profile) {
+      //     const nameEl = document.querySelector(".name");
+      //     nameEl.innerText = profile.name;
+      //   }
+      // } catch (error) {
+      //   localStorage.removeItem("user_token");
+      //   render();
+      // }
+      const profile = await requestProfile();
+      if (profile) {
+        const nameEl = document.querySelector(".name");
+        nameEl.innerText = profile.name;
       }
     };
     getProfile();
