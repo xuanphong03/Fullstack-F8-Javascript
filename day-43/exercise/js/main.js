@@ -395,6 +395,11 @@ const handleGetUserBlog = () => {
     const { userId, type } = e.target.dataset;
 
     if (userId && type === "view-profile") {
+      const backHomeBtnEl = root.querySelector(".back-btn");
+      if (backHomeBtnEl) {
+        backHomeBtnEl.remove();
+      }
+
       current_mode = mode.VIEW_PROFILE;
       handleLoading(true);
       const response = await requestGetUserBlog(userId);
@@ -405,6 +410,10 @@ const handleGetUserBlog = () => {
           top: 0,
           left: 0,
         });
+        const userProfileEl = root.querySelector(".user-profile");
+        if (userProfileEl) {
+          userProfileEl.remove();
+        }
         renderUserBlog(response.data);
         renderProfile(response.data);
         handleBackToHomePage();
@@ -420,6 +429,14 @@ const handleGetBlogDetail = () => {
   root.addEventListener("click", async (e) => {
     const { blogId, type } = e.target.dataset;
     if (blogId && type === "view-more") {
+      const backHomeBtnEl = root.querySelector(".back-btn");
+      const userProfileEl = root.querySelector(".user-profile");
+      if (backHomeBtnEl) {
+        backHomeBtnEl.remove();
+      }
+      if (userProfileEl) {
+        userProfileEl.remove();
+      }
       current_mode = mode.VIEW_MORE;
       handleLoading(true);
       const response = await requestGetBlogDetail(blogId);
