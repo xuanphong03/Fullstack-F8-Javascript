@@ -60,7 +60,7 @@ export const requestLogin = async (data) => {
 };
 
 export const requestRegister = async (data) => {
-  const response = await authClient.post("/auth/register");
+  const response = await authClient.post("/auth/register", data);
   if (response.ok) {
     return response.data;
   }

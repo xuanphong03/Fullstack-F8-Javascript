@@ -233,21 +233,22 @@ const handleGetBlogsList = async (params) => {
 
 // Xử lý render Blog list
 const renderBlogs = (blogs = []) => {
-  console.log("Blogs: ", blogs);
-
-  blogsListEl.innerHTML = blogs
-    .map(
-      ({
-        userId: { _id: _userId, name },
-        _id: _blogId,
-        title,
-        content,
-        timeUp,
-      }) => {
-        const hashtag = createHashtag(name);
-        const { date, time } = formatDateTime(timeUp);
-        const firstLetterOfName = getFirstLetterOfName(name);
-        return `
+  if (!blogs.length) {
+    blogsListEl.innerText = "Chưa có dữ liệu !";
+  } else {
+    blogsListEl.innerHTML = blogs
+      .map(
+        ({
+          userId: { _id: _userId, name },
+          _id: _blogId,
+          title,
+          content,
+          timeUp,
+        }) => {
+          const hashtag = createHashtag(name);
+          const { date, time } = formatDateTime(timeUp);
+          const firstLetterOfName = getFirstLetterOfName(name);
+          return `
       <article class='flex flex-col justify-between h-80 p-4 border border-solid border-gray rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 col-span-3'>
         <div class='flex flex-col gap-2'>
           <div class='flex gap-2 items-center'>
@@ -276,9 +277,10 @@ const renderBlogs = (blogs = []) => {
         </div>
       </article>
     `;
-      }
-    )
-    .join("");
+        }
+      )
+      .join("");
+  }
 };
 
 const renderBlogDetail = (blog) => {
