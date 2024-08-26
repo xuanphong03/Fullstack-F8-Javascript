@@ -3,9 +3,10 @@ import {
   requestRegister,
   requestLogout,
   requestProfile,
-  requestRefreshToken,
   requestGetBlogs,
   requestCreateBlog,
+  requestGetUserBlog,
+  requestGetBlogDetail,
 } from "./requestApi.js";
 import {
   escapeHTML,
@@ -23,17 +24,27 @@ const endBlogsListEl = root.querySelector(".end-blogs-list");
 let blogs = [];
 const params = {
   page: 1,
-  limit: 10,
+  limit: 16,
 };
+const mode = {
+  VIEW_ALL: "view_all",
+  VIEW_MORE: "view_more",
+  VIEW_PROFILE: "view_profile",
+};
+let current_mode = mode.VIEW_ALL;
 
 const renderLoginForm = () => {
   const loginFormEl = document.createElement("div");
+  const backBtn = document.querySelector(".back-btn");
+  if (backBtn) {
+    backBtn.remove();
+  }
   loginFormEl.classList.add("login-form");
   loginFormEl.innerHTML = `
     <div
         class="form-container flex items-center justify-center fixed inset-0 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
     >   
-        <button class='back-btn absolute top-2 left-2 text-white px-5 py-2 rounded bg-green-500 hover:opacity-70'>Quay trở lại</button>
+        <button class='back-btn absolute top-2 left-2 text-white px-5 py-2 rounded bg-green-500 hover:opacity-70'>Quay lại trang chủ</button>
         <div class="bg-white p-5 rounded">
             <h2 class="text-center mb-5 uppercase text-xl font-medium">
                 Đăng nhập
@@ -89,12 +100,16 @@ const renderLoginForm = () => {
 
 const renderRegisterForm = () => {
   const registerFormEl = document.createElement("div");
+  const backBtn = document.querySelector(".back-btn");
+  if (backBtn) {
+    backBtn.remove();
+  }
   registerFormEl.classList.add("register-form");
   registerFormEl.innerHTML = `
     <div
         class="form-container flex items-center justify-center fixed inset-0 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
     >
-      <button class='back-btn absolute top-2 left-2 text-white px-5 py-2 rounded bg-green-500 hover:opacity-70'>Quay trở lại</button>
+      <button class='back-btn absolute top-2 left-2 text-white px-5 py-2 rounded bg-green-500 hover:opacity-70'>Quay lại trang chủ</button>
       <div class="bg-white p-5 rounded">
         <h2 class="text-center mb-5 uppercase text-xl font-medium">
           Đăng ký
@@ -172,6 +187,8 @@ const renderHomePage = () => {
         const { name } = response.data;
         nameEl.innerText = name;
       } else {
+        blogs = [];
+        params.page = 1;
         renderHomePage();
       }
     };
@@ -182,6 +199,7 @@ const renderHomePage = () => {
     loginBtn.classList.remove("hidden");
     welcomeBox.classList.add("hidden");
   }
+  console.log("Render home page");
   handleGetBlogsList(params);
 };
 
@@ -206,6 +224,7 @@ const handleGetBlogsList = async (params) => {
   handleLoading(true);
   const newBlogs = await requestGetBlogs(params);
   if (newBlogs) {
+    console.log("New blog: ", newBlogs);
     blogs = [...blogs, ...newBlogs];
     renderBlogs(blogs);
   }
@@ -213,36 +232,214 @@ const handleGetBlogsList = async (params) => {
 };
 
 // Xử lý render Blog list
-const renderBlogs = (blogs) => {
+const renderBlogs = (blogs = []) => {
+  console.log("Blogs: ", blogs);
+
   blogsListEl.innerHTML = blogs
-    .map(({ userId: { name }, title, content, timeUp }) => {
-      const hashtag = createHashtag(name);
-      const { date, time } = formatDateTime(timeUp);
-      const firstLetterOfName = getFirstLetterOfName(name);
-      return `
-      <article class='relative flex flex-col gap-2 p-2 border border-solid border-gray rounded'>
-        <div class='flex gap-2 items-center'>
+    .map(
+      ({
+        userId: { _id: _userId, name },
+        _id: _blogId,
+        title,
+        content,
+        timeUp,
+      }) => {
+        const hashtag = createHashtag(name);
+        const { date, time } = formatDateTime(timeUp);
+        const firstLetterOfName = getFirstLetterOfName(name);
+        return `
+      <article class='flex flex-col justify-between h-80 p-4 border border-solid border-gray rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 col-span-3'>
+        <div class='flex flex-col gap-2'>
+          <div class='flex gap-2 items-center'>
           <div class='size-10 rounded-full bg-[#6EEB83] text-xl flex justify-center items-center'>${escapeHTML(
             firstLetterOfName
           )}</div>
-          <h3 class='text-xl text-[#6EEB83] font-medium break-words'>${escapeHTML(
-            name
-          )}</h3>
+            <h3 class='text-xl text-[#6EEB83] font-medium break-words'>${escapeHTML(
+              name
+            )}</h3>
+          </div>
+          <h4 class='break-words'>Tiêu đề: ${escapeHTML(title)}</h4>
+          <p class='break-words line-clamp-4'>Nội dung: ${escapeHTML(
+            content
+          )}</p>
         </div>
-        <h4 class='break-words'>Tiêu đề: ${escapeHTML(title)}</h4>
-        <p class='break-words'>Nội dung: ${escapeHTML(content)}</p>
-        <div class='bg-[#6EEB83] w-fit px-2 py-1 text-sm break-words rounded underline'>${escapeHTML(
-          hashtag
-        )}</div>
-        <div class='absolute right-full top-0 px-5'>
-          <p>${escapeHTML(time)}</p>
-          <p>${escapeHTML(date)}</p>
+        <div>
+          <button  data-blog-id='${_blogId}' data-type='view-more'  class='cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
+            #view more ${escapeHTML(title)}...
+          </button>
+          <button data-user-id='${_userId}' data-type='view-profile' class='cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
+            ${escapeHTML(hashtag)}
+          </button>
+          <div class='mt-2 text-sm'>
+            <p>Đã đăng lúc: ${escapeHTML(time)} ngày ${escapeHTML(date)}</p>
+          </div>
         </div>
       </article>
     `;
-    })
+      }
+    )
     .join("");
 };
+
+const renderBlogDetail = (blog) => {
+  const {
+    title,
+    content,
+    timeUp,
+    userId: { _id, name },
+  } = blog;
+  const hashtag = createHashtag(name);
+  const { date, time } = formatDateTime(timeUp);
+  const firstLetterOfName = getFirstLetterOfName(name);
+  blogsListEl.innerHTML = `
+    <article class='flex flex-col justify-between h-80 p-4 border border-solid border-gray rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 col-span-6'>
+      <div class='flex flex-col gap-2'>
+          <div class='flex gap-2 items-center'>
+          <div class='size-10 rounded-full bg-[#6EEB83] text-xl flex justify-center items-center'>${escapeHTML(
+            firstLetterOfName
+          )}</div>
+            <h3 class='text-xl text-[#6EEB83] font-medium break-words'>${escapeHTML(
+              name
+            )}</h3>
+          </div>
+          <h4 class='break-words'>Tiêu đề: ${escapeHTML(title)}</h4>
+          <p class='break-words line-clamp-4'>Nội dung: ${escapeHTML(
+            content
+          )}</p>
+        </div>
+        <div>
+          <button data-user-id='${_id}' data-type='view-profile' class='cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
+            ${escapeHTML(hashtag)}
+          </button>
+          <div class='mt-2 text-sm'>
+            <p>Đã đăng lúc: ${escapeHTML(time)} ngày ${escapeHTML(date)}</p>
+          </div>
+        </div>
+    </article>
+    
+  `;
+  createBackHomeBtn();
+};
+
+const createBackHomeBtn = () => {
+  const parentNode = blogsListEl.parentNode;
+  const backHomeBtnEl = document.createElement("button");
+  backHomeBtnEl.classList.add(
+    "back-btn",
+    "px-5",
+    "py-2",
+    "rounded",
+    "bg-[#6EEB83]",
+    "cursor-pointer",
+    "hover:opacity-70",
+    "transition-all",
+    "mb-5"
+  );
+  backHomeBtnEl.innerText = "Quay lại trang chủ";
+  parentNode.insertBefore(backHomeBtnEl, blogsListEl);
+};
+
+const renderProfile = (data) => {
+  const profileUser = document.createElement("div");
+  const parentNode = blogsListEl.parentNode;
+  profileUser.classList.add("user-profile");
+  profileUser.innerHTML = `
+    <p class='mb-5 w-fit rounded  text-white'>Danh sách blogs của người dùng: <span class='text-4xl text-[#6EEB83] uppercase font-medium'>${escapeHTML(
+      data.name
+    )}</span></p>
+  `;
+  parentNode.insertBefore(profileUser, blogsListEl);
+};
+
+const renderUserBlog = (data) => {
+  const { name, blogs } = data;
+  const firstLetterOfName = getFirstLetterOfName(name);
+
+  blogsListEl.innerHTML = blogs
+    .map(({ _id, title, content, timeUp }) => {
+      const { date, time } = formatDateTime(timeUp);
+      return `
+    <article class='flex flex-col justify-between h-80 p-4 border border-solid border-gray rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 col-span-3'>
+      <div class='flex flex-col gap-2'>
+          <div class='flex gap-2 items-center'>
+          <div class='size-10 rounded-full bg-[#6EEB83] text-xl flex justify-center items-center'>${escapeHTML(
+            firstLetterOfName
+          )}</div>
+            <h3 class='text-xl text-[#6EEB83] font-medium break-words'>${escapeHTML(
+              name
+            )}</h3>
+          </div>
+          <h4 class='break-words'>Tiêu đề: ${escapeHTML(title)}</h4>
+          <p class='break-words line-clamp-4'>Nội dung: ${escapeHTML(
+            content
+          )}</p>
+        </div>
+      <div>
+        <button data-blog-id='${_id}'  data-type='view-more'  class='cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
+        #view more ${escapeHTML(title)}...
+      </button>
+      <div class='mt-2 text-sm'>
+        <p>Đã đăng lúc: ${escapeHTML(time)} ngày ${escapeHTML(date)}</p>
+      </div>
+      </div>
+    </article>
+  `;
+    })
+    .join("");
+
+  createBackHomeBtn();
+};
+
+const handleGetUserBlog = () => {
+  root.addEventListener("click", async (e) => {
+    const { userId, type } = e.target.dataset;
+
+    if (userId && type === "view-profile") {
+      current_mode = mode.VIEW_PROFILE;
+      handleLoading(true);
+      const response = await requestGetUserBlog(userId);
+      handleLoading(false);
+
+      if (response.status_code === "SUCCESS") {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+        });
+        renderUserBlog(response.data);
+        renderProfile(response.data);
+        handleBackToHomePage();
+      } else {
+        alert("Đã có lỗi xảy ra!");
+      }
+    }
+  });
+};
+
+// Xử lý get blog detail
+const handleGetBlogDetail = () => {
+  root.addEventListener("click", async (e) => {
+    const { blogId, type } = e.target.dataset;
+    if (blogId && type === "view-more") {
+      current_mode = mode.VIEW_MORE;
+      handleLoading(true);
+      const response = await requestGetBlogDetail(blogId);
+      handleLoading(false);
+      if (response.status_code === "SUCCESS") {
+        // Scroll lên đầu trang tránh conflict với handleInfinityScroll
+        window.scrollTo({
+          top: 0,
+          left: 0,
+        });
+        renderBlogDetail(response.data);
+        handleBackToHomePage();
+      } else {
+        alert("Đã có lỗi xảy ra!");
+      }
+    }
+  });
+};
+
+// Xóa form tạo blog
 const cancelCreateBlogHandler = () => {
   const createBlogFormContainerEl = root.querySelector(".modal-create-blog");
   const cancelBtn = createBlogFormContainerEl.querySelector(".cancel-btn");
@@ -254,6 +451,8 @@ const cancelCreateBlogHandler = () => {
     }
   });
 };
+
+// Func: Tạo form thêm blog
 const createBlogFormHandler = () => {
   const createBlogFormContainerEl = document.createElement("div");
 
@@ -302,6 +501,7 @@ const createBlogFormHandler = () => {
   createBlogHandler();
 };
 
+// Func: Tạo blog mới
 const createBlogHandler = () => {
   const createBlogFormInnerEl = document.querySelector(".create-blog-form");
   createBlogFormInnerEl.addEventListener("submit", (e) => {
@@ -322,6 +522,11 @@ const createBlogHandler = () => {
             createBlogFormContainerEl.remove();
             blogs.unshift(newBlog);
             renderBlogs(blogs);
+          } else {
+            // access token và refresh token đều hết hạn
+            blogs = [];
+            params.page = 1;
+            renderHomePage();
           }
         } catch (error) {
           alert("Sorry. Phiên đăng nhập đã hết hạn (handle create blog)");
@@ -336,9 +541,9 @@ const createBlogHandler = () => {
   });
 };
 
+// Xử lý tạo blog mới
 const handleCreateBlog = () => {
   const createBlogBtn = document.querySelector(".create-blog-btn");
-
   if (createBlogBtn) {
     createBlogBtn.removeEventListener("click", createBlogFormHandler);
     createBlogBtn.addEventListener("click", createBlogFormHandler);
@@ -369,12 +574,26 @@ const handleBackToHomePage = () => {
   const currentForm =
     document.querySelector(".login-form") ||
     document.querySelector(".register-form");
-  const backBtn = document.querySelector(".back-btn");
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
+  const backHomePageBtnEl = document.querySelector(".back-btn");
+  if (backHomePageBtnEl) {
+    backHomePageBtnEl.addEventListener("click", () => {
+      const userProfileEl = root.querySelector(".user-profile");
+      if (userProfileEl) {
+        userProfileEl.remove();
+      }
       if (currentForm) {
         currentForm.remove();
       }
+      window.scrollTo({
+        top: 0,
+        left: 0,
+      });
+      current_mode = mode.VIEW_ALL;
+      blogsListEl.innerHTML = "";
+      blogs = [];
+      params.page = 1;
+      backHomePageBtnEl.remove();
+      handleGetBlogsList(params);
     });
   }
 };
@@ -510,7 +729,7 @@ const handleInfinityScroll = () => {
   const observer = new IntersectionObserver(
     (entries, observer) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && current_mode === mode.VIEW_ALL) {
           params.page++;
           handleGetBlogsList(params);
         }
@@ -526,5 +745,7 @@ const handleInfinityScroll = () => {
 };
 
 renderHomePage();
+handleGetUserBlog();
+handleGetBlogDetail();
 handleClickLoginBtn();
 handleInfinityScroll();

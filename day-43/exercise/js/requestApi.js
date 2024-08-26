@@ -128,3 +128,11 @@ export const requestCreateBlog = async (newBlog) => {
   }
   return false;
 };
+
+export const requestGetUserBlog = async (userId) => {
+  const response = await authClient.get(`/users/${userId}`);
+  if (response.ok) {
+    return response.data;
+  }
+  return false;
+};
