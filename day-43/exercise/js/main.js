@@ -265,12 +265,14 @@ const renderBlogs = (blogs = []) => {
           )}</p>
         </div>
         <div>
-          <button  data-blog-id='${_blogId}' data-type='view-more'  class='cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
-            #view more ${escapeHTML(title)}...
-          </button>
-          <button data-user-id='${_userId}' data-type='view-profile' class='cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
-            ${escapeHTML(hashtag)}
-          </button>
+          <div class='flex flex-wrap gap-2'>
+            <button  data-blog-id='${_blogId}' data-type='view-more'  class='line-clamp-1 cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
+              #view more ${escapeHTML(title)}...
+            </button>
+            <button data-user-id='${_userId}' data-type='view-profile' class='line-clamp-1 cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
+              ${escapeHTML(hashtag)}
+            </button>
+          </div>
           <div class='mt-2 text-sm'>
             <p>Đã đăng lúc: ${escapeHTML(time)} ngày ${escapeHTML(date)}</p>
           </div>
@@ -310,7 +312,7 @@ const renderBlogDetail = (blog) => {
           )}</p>
         </div>
         <div>
-          <button data-user-id='${_id}' data-type='view-profile' class='cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
+          <button data-user-id='${_id}' data-type='view-profile' class='line-clamp-1 cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
             ${escapeHTML(hashtag)}
           </button>
           <div class='mt-2 text-sm'>
@@ -377,7 +379,7 @@ const renderUserBlog = (data) => {
           )}</p>
         </div>
       <div>
-        <button data-blog-id='${_id}'  data-type='view-more'  class='cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
+        <button data-blog-id='${_id}'  data-type='view-more'  class='line-clamp-1 cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
         #view more ${escapeHTML(title)}...
       </button>
       <div class='mt-2 text-sm'>
