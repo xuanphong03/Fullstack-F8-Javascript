@@ -205,16 +205,19 @@ const renderHomePage = () => {
 
 // Xử lý đăng xuất
 const handleLogoutAccount = () => {
-  const { accessToken } = JSON.parse(localStorage.getItem("user_token"));
   const logoutBtn = document.querySelector(".logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async (e) => {
       e.preventDefault();
-      await requestLogout(accessToken);
-      localStorage.removeItem("user_token");
-      blogs = [];
-      params.page = 1;
-      renderHomePage();
+      handleLoading(true);
+      const { status_code } = await requestLogout();
+      handleLoading(false);
+      if (status_code === "SUCCESS") {
+        localStorage.removeItem("user_token");
+        blogs = [];
+        params.page = 1;
+        renderHomePage();
+      }
     });
   }
 };

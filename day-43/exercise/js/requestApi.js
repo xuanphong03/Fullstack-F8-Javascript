@@ -97,7 +97,7 @@ export const requestRefreshToken = async (refreshToken) => {
 };
 
 export const requestLogout = async () => {
-  const response = authClient.post("/auth/logout", {});
+  const response = await authClient.post("/auth/logout");
   if (response.ok) {
     return response.data;
   }
