@@ -31,7 +31,7 @@ export const createHashtag = (name) => {
 
   // Loại bỏ khoảng trắng giữa các từ và thêm dấu #
   const hashtag = `#${normalized.replace(/\s+/g, "")}`;
-  return hashtag;
+  return hashtag.trim();
 };
 
 // Chuyển ISO 8601 về ngày giờ cụ thể
@@ -64,5 +64,34 @@ export const getFirstLetterOfName = (name) => {
   // Lấy phần tử cuối cùng trong mảng (tên)
   const firstName = nameParts[nameParts.length - 1];
   // Lấy chữ cái đầu tiên của tên
-  return firstName.charAt(0).toUpperCase();
+  return firstName.charAt(0).toUpperCase().trim();
+};
+
+export const showToast = (text = "", type = "success") => {
+  let background;
+  if (type === "success") {
+    background = "green";
+  } else if (type === "error") {
+    background = "red";
+  } else if (type === "warning") {
+    background = "yellow";
+  } else if (type === "info") {
+    background = "blue";
+  }
+
+  Toastify({
+    text,
+    className: "info",
+    style: {
+      background,
+    },
+  }).showToast();
+};
+
+export const convertDateFormat = (dateString) => {
+  // Split the date string into an array [mm, dd, yyyy]
+  const [month, day, year] = dateString.split("/");
+
+  // Return the date in dd/mm/yyyy format
+  return `${day}/${month}/${year}`;
 };

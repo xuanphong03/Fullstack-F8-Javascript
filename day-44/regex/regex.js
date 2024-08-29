@@ -1,4 +1,4 @@
 const str = "hoanganit19";
-const pattern = /i[tabc]/;
+const pattern = /i[abc]/;
 
 console.log(pattern.test(str));

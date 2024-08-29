@@ -9,9 +9,11 @@ import {
   requestGetBlogDetail,
 } from "./requestApi.js";
 import {
+  showToast,
   escapeHTML,
   createHashtag,
   formatDateTime,
+  convertDateFormat,
   getFirstLetterOfName,
 } from "./utils.js";
 
@@ -492,7 +494,7 @@ const createBlogFormHandler = () => {
     "z-[99999]"
   );
   createBlogFormContainerEl.innerHTML = `
-    <form class='create-blog-form w-[600px] bg-white px-5 py-3 rounded'>
+    <form class='create-blog-form w-[600px] bg-white px-5 py-3 rounded-lg'>
       <div class='flex flex-col gap-1 mb-4'>
         <label for='blog-title'>Tên tiêu đề</label>
         <input
@@ -514,6 +516,10 @@ const createBlogFormHandler = () => {
           placeholder='Nhập nội dung của blog'
         ></textarea>
       </div>
+      <div  class='flex flex-col gap-1 mb-5'>
+        <label for='blog-time-up'>Thời gian đăng bài</label>
+        <input type='date' name='blogTimeUp' id='blog-time-up' class="blog-time-up w-full p-2 text-sm rounded outline-none border border-solid resize-none border-black" />
+      </div>
       <div class='flex gap-4 justify-end'>
         <button type='button' class='cancel-btn bg-gray-500 px-5 py-1 rounded text-white hover:opacity-70'>Hủy</button>
         <button type='submit' class='bg-green-500 px-5 py-1 rounded text-white hover:opacity-70'>Tạo blog</button>
@@ -522,7 +528,62 @@ const createBlogFormHandler = () => {
   `;
   root.append(createBlogFormContainerEl);
   cancelCreateBlogHandler();
+  handleDatePicker();
   createBlogHandler();
+};
+
+const handleDatePicker = () => {
+  const typeToast = {
+    SUCCESS: "success",
+    ERROR: "error",
+  };
+
+  const datePickerEl = root.querySelector(".blog-time-up");
+  if (datePickerEl) {
+    // Thiết lập giá trị mặc định
+    const today = new Date().toISOString().split("T")[0];
+    datePickerEl.value = today;
+
+    datePickerEl.addEventListener("input", (e) => {
+      const currentTime = new Date();
+      const postedTime = new Date(e.target.value);
+
+      currentTime.setHours(0, 0, 0, 0);
+      postedTime.setHours(0, 0, 0, 0);
+
+      if (postedTime.getTime() < currentTime.getTime()) {
+        showToast("Vui lòng chọn ngày hợp lệ!", typeToast.ERROR);
+      } else if (postedTime.getTime() >= currentTime.getTime()) {
+        const now = new Date();
+        const message = `Blog sẽ được đăng vào ${now.getHours()} giờ ${now.getMinutes()} ngày ${convertDateFormat(
+          postedTime.toLocaleDateString()
+        )}`;
+        showToast(message, typeToast.SUCCESS);
+      }
+    });
+  }
+};
+
+const POSTING_TIME = {
+  past: "PAST",
+  current: "CURRENT",
+  future: "FUTURE",
+};
+
+const checkPostingTimeStatus = (postingTime) => {
+  const current_time = new Date();
+  const posting_time = new Date(postingTime);
+
+  current_time.setHours(0, 0, 0, 0);
+  posting_time.setHours(0, 0, 0, 0);
+
+  if (posting_time.getTime() < current_time.getTime()) {
+    return POSTING_TIME.past;
+  } else if (posting_time.getTime() === current_time.getTime()) {
+    return POSTING_TIME.current;
+  } else {
+    return POSTING_TIME.future;
+  }
 };
 
 // Func: Tạo blog mới
@@ -530,7 +591,13 @@ const createBlogHandler = () => {
   const createBlogFormInnerEl = document.querySelector(".create-blog-form");
   createBlogFormInnerEl.addEventListener("submit", (e) => {
     e.preventDefault();
-    const formData = Object.fromEntries(new FormData(e.target));
+    const { blogTimeUp, ...formData } = Object.fromEntries(
+      new FormData(e.target)
+    );
+    const postingTimeStatus = blogTimeUp
+      ? checkPostingTimeStatus(blogTimeUp)
+      : POSTING_TIME.current;
+
     const hasError = validateForm(e.target);
     if (!hasError) {
       const createBlog = async () => {
@@ -546,6 +613,7 @@ const createBlogHandler = () => {
             createBlogFormContainerEl.remove();
             blogs.unshift(newBlog);
             renderBlogs(blogs);
+            showToast("Đăng tải thành công", "success");
           } else {
             // access token và refresh token đều hết hạn
             blogs = [];
@@ -560,7 +628,15 @@ const createBlogHandler = () => {
           }
         }
       };
-      createBlog();
+      // Nếu người dùng chọn ngày trong quá khứ thì mặc định chuyển về hiện tại
+      if (
+        postingTimeStatus === POSTING_TIME.past ||
+        postingTimeStatus === POSTING_TIME.current
+      ) {
+        createBlog();
+      } else if (postingTimeStatus === POSTING_TIME.future) {
+        /// API chưa hỗ trợ
+      }
     }
   });
 };
