@@ -38,3 +38,15 @@ Ký hiệu viết tắt của độ dài
 * ==> {0,}
 ? ==> {0,1}
 ```
+
+Hoặc (|) - Phủ định (^)
+
+Ký hiệu đại diện cho tất cả ký tự .
+
+```
+\w: Thường, hoa, số, _
+\W: Ngược lại của \w
+\d: Số
+\D: Ngược lại
+\s: Khoảng trắng
+```
