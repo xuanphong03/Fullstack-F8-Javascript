@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blogger</title>
+    <title>User blogs list</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -28,7 +28,7 @@
       <div>
         <div class="py-2 px-5 bg-slate-300">
           <a
-            href="./auth/index.html"
+            href="../auth/index.html"
             class="login-btn block w-fit bg-blue-500 text-white px-5 py-2 rounded hover:opacity-70"
             >Đăng nhập</a
           >
@@ -51,16 +51,20 @@
         </div>
       </div>
       <div
-        class="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% text-white px-10 py-5 min-h-screen"
+        class="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% text-white p-5 min-h-[calc(100vh-56px)]"
       >
-        <div class="blogs-list mx-auto gap-10 grid grid-cols-12"></div>
+        <a
+          href="../index.html"
+          class="back-home-btn block w-fit bg-green-500 px-5 py-2 rounded mb-5"
+          >Quay về trang chủ</a
+        >
+        <div class="blogs-list gap-10 grid grid-cols-12"></div>
       </div>
-      <div class="end-blogs-list"></div>
     </div>
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/toastify-js"
     ></script>
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>

@@ -53,21 +53,17 @@ export const requestLogin = async (data) => {
   if (response.ok) {
     return response.data;
   }
-  return {
-    status_code: "FAILED",
-    error_message: response?.data?.message,
-  };
+  return false;
 };
 
 export const requestRegister = async (data) => {
   const response = await authClient.post("/auth/register", data);
+  console.log("response api", response);
+
   if (response.ok) {
     return response.data;
   }
-  return {
-    status_code: "FAILED",
-    error_message: response?.data?.message,
-  };
+  return false;
 };
 
 export const requestProfile = async () => {

@@ -1,3 +1,4 @@
+import { regex } from "../constants/regex.js";
 // Func: Xử lý XSS
 export const escapeHTML = (str) => {
   return str.replace(/[&<>"'\/]/g, (char) => {
@@ -18,6 +19,20 @@ export const escapeHTML = (str) => {
         return char;
     }
   });
+};
+
+export const handleLoading = (isLoading = false) => {
+  const loadingModalEl = document.querySelector(".modal-loading");
+  if (!loadingModalEl) {
+    return;
+  }
+  if (isLoading) {
+    loadingModalEl.classList.replace("invisible", "visible");
+    loadingModalEl.classList.replace("opacity-0", "opacity-100");
+  } else {
+    loadingModalEl.classList.replace("visible", "invisible");
+    loadingModalEl.classList.replace("opacity-100", "opacity-0");
+  }
 };
 
 // Tạo hash tag cho blog
@@ -94,4 +109,29 @@ export const convertDateFormat = (dateString) => {
 
   // Return the date in dd/mm/yyyy format
   return `${day}/${month}/${year}`;
+};
+
+export const convertBlogContent = (content) => {
+  const { telephone, email, videoYoutube, link } = regex;
+  // Số điện thoại
+  content = content.replace(telephone, function (match) {
+    return `<a class='underline hover:text-[#6eeb83]' target='_blank' href="tel:${match}">${match}</a>`;
+  });
+  // Email
+  content = content.replace(email, function (match) {
+    return `<a class='underline hover:text-[#6eeb83]' target='_blank' href="mailto:${match}">${match}</a>`;
+  });
+  // YouTube
+  content = content.replace(videoYoutube, function (match) {
+    const videoId = match.match(videoYoutube)[1];
+    return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+  });
+  // Link thông thường
+  content = content.replace(link, function (match) {
+    console.log("123");
+
+    return `<a class='underline hover:text-[#6eeb83]' target='_blank' href="${match}" >${match}</a>`;
+  });
+
+  return content;
 };

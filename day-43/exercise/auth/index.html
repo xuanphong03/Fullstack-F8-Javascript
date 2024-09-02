@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authentication Page</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="root">
+      <div
+        class="modal-loading fixed inset-0 bg-[rgba(0,0,0,0.5)] flex justify-center items-center invisible opacity-0 transition-all duration-300 z-[9999999]"
+      >
+        <i class="fa-solid fa-spinner text-4xl animate-spin text-white"></i>
+      </div>
+      <div
+        class="relative h-screen bg-cover bg-no-repeat bg-center bg-neutral-300 bg-[url('https://plus.unsplash.com/premium_photo-1684581214880-2043e5bc8b8b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmxvZyUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D')]"
+      >
+        <a
+          href="../index.html"
+          class="back-home-btn absolute top-2 left-2 text-white px-5 py-2 bg-green-500 rounded cursor-pointer transition-all outline-none z-[9999]"
+          >Quay về trang chủ</a
+        >
+      </div>
+    </div>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
