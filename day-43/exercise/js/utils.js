@@ -1,4 +1,4 @@
-import { regex } from "../constants/regex.js";
+import { regexPatterns } from "../constants/regex.js";
 // Func: Xử lý XSS
 export const escapeHTML = (str) => {
   return str.replace(/[&<>"'\/]/g, (char) => {
@@ -112,25 +112,41 @@ export const convertDateFormat = (dateString) => {
 };
 
 export const convertBlogContent = (content) => {
-  const { telephone, email, videoYoutube, link } = regex;
-  // Số điện thoại
-  content = content.replace(telephone, function (match) {
-    return `<a class='underline hover:text-[#6eeb83]' target='_blank' href="tel:${match}">${match}</a>`;
+  content = content.replaceAll("<", "&lt;").replaceAll(">", "&gte;");
+  const { telephonePattern, emailPattern, youtubePattern, normalLinkPattern } =
+    regexPatterns;
+  content = content.replaceAll(telephonePattern, (telephoneNumber) => {
+    return `<a class='hover:text-[#6eeb83] transition-all underline' target='_blank' href='tel:${telephoneNumber}'>${telephoneNumber}</a>`;
   });
-  // Email
-  content = content.replace(email, function (match) {
-    return `<a class='underline hover:text-[#6eeb83]' target='_blank' href="mailto:${match}">${match}</a>`;
+  content = content.replaceAll(emailPattern, (email) => {
+    return `<a class='hover:text-[#6eeb83] transition-all underline' target='_blank' href='mailto:${email}'>${email}</a>`;
   });
-  // YouTube
-  content = content.replace(videoYoutube, function (match) {
-    const videoId = match.match(videoYoutube)[1];
-    return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+  content = content.replaceAll(normalLinkPattern, (linkUrl) => {
+    if (youtubePattern.test(linkUrl)) {
+      youtubePattern.lastIndex = 0;
+      return linkUrl;
+    }
+    return `<a class='hover:text-[#6eeb83] transition-all underline' target='_blank' href='${linkUrl}'>${linkUrl}</a>`;
   });
-  // Link thông thường
-  content = content.replace(link, function (match) {
-    console.log("123");
-
-    return `<a class='underline hover:text-[#6eeb83]' target='_blank' href="${match}" >${match}</a>`;
+  content = content.replaceAll(youtubePattern, (youtubeUrl) => {
+    youtubePattern.lastIndex = 0;
+    let videoYoutubeId = youtubeUrl.split(
+      /(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/
+    )[2];
+    if (videoYoutubeId) {
+      videoYoutubeId = videoYoutubeId.split(/[^0-9a-z_-]/i)[0];
+      return `
+      <iframe
+        class='my-2'
+        width='400'
+        height='250'
+        src='https://www.youtube.com/embed/${videoYoutubeId}'
+        title='YouTube video player'
+        frameBorder='0'
+        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+        allowFullScreen></iframe>
+    `;
+    }
   });
 
   return content;

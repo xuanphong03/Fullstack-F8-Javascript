@@ -1,12 +1,8 @@
 import {
-  requestLogin,
-  requestRegister,
   requestLogout,
   requestProfile,
   requestGetBlogs,
   requestCreateBlog,
-  requestGetUserBlog,
-  requestGetBlogDetail,
 } from "./requestApi.js";
 import {
   showToast,
@@ -15,6 +11,7 @@ import {
   formatDateTime,
   convertDateFormat,
   getFirstLetterOfName,
+  convertBlogContent,
 } from "./utils.js";
 
 const root = document.querySelector("#root");
@@ -127,7 +124,7 @@ const renderBlogs = (blogs = []) => {
           <h4 class='break-words line-clamp-1'>Tiêu đề: ${escapeHTML(
             title
           )}</h4>
-          <p class='break-words line-clamp-4'>Nội dung: ${escapeHTML(
+          <p class='break-words line-clamp-1'>Nội dung: ${escapeHTML(
             content
           )}</p>
         </div>

@@ -1,5 +1,5 @@
 import { requestLogin, requestRegister } from "../js/requestApi.js";
-import { regex } from "../constants/regex.js";
+import { regexPatterns } from "../constants/regex.js";
 import { showToast } from "../js/utils.js";
 
 const root = document.querySelector("#root");
@@ -242,7 +242,7 @@ const validateForm = (form) => {
     } else if (
       registerForm &&
       inputName === "password" &&
-      !regex.password.test(inputValue)
+      !regexPatterns.passwordPattern.test(inputValue)
     ) {
       // Kiểm tra điều kiện mật khẩu
       const newMessageEl = document.createElement("p");
@@ -269,11 +269,13 @@ const handleLoading = (isLoading = false) => {
 };
 
 const redirectHomePage = () => {
-  const { accessToken } = JSON.parse(localStorage.getItem("user_token"));
-  console.log(accessToken);
+  if (localStorage.getItem("user_token")) {
+    const { accessToken } = JSON.parse(localStorage.getItem("user_token"));
+    console.log(accessToken);
 
-  if (accessToken) {
-    backHomeBtn.click();
+    if (accessToken) {
+      backHomeBtn.click();
+    }
   }
 };
 renderLoginForm();

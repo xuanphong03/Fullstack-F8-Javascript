@@ -23,7 +23,7 @@ const renderBlogDetail = (blog) => {
   const { date, time } = formatDateTime(timeUp);
   const firstLetterOfName = getFirstLetterOfName(name);
   blogDetailWrapper.innerHTML = `
-    <article class='flex flex-col justify-between h-80 p-4 border border-solid border-gray rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 col-span-6'>
+    <article class='flex flex-col justify-between p-4 border border-solid border-gray rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 col-span-6'>
       <div class='flex flex-col gap-2'>
           <div class='flex gap-2 items-center'>
           <div class='size-10 rounded-full bg-[#6EEB83] text-xl flex justify-center items-center'>${escapeHTML(
@@ -35,10 +35,10 @@ const renderBlogDetail = (blog) => {
           </div>
           <h4 class='break-words'>Tiêu đề: ${escapeHTML(title)}</h4>
           <p class='break-words line-clamp-4'>Nội dung: ${convertBlogContent(
-            escapeHTML(content)
+            content
           )}</p>
         </div>
-        <div>
+        <div class='mt-5'>
           <a href='../user_blogs/index.html?user_id=${_id}' class='line-clamp-1 cursor-pointer bg-[#6EEB83] hover:text-[#6EEB83] hover:bg-white border-2 border-solid border-[#6EEB83] transition-all w-fit px-2 py-1 text-sm break-words rounded underline'>
             ${escapeHTML(hashtag)}
           </a>

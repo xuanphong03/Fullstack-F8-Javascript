@@ -1,7 +1,7 @@
 import { requestGetUserBlog } from "../js/requestApi.js";
 import {
   handleLoading,
-  createHashtag,
+  convertBlogContent,
   getFirstLetterOfName,
   formatDateTime,
   escapeHTML,
@@ -36,7 +36,7 @@ const renderUserBlogs = (data) => {
           <h4 class='break-words line-clamp-1'>Tiêu đề: ${escapeHTML(
             title
           )}</h4>
-          <p class='break-words line-clamp-4'>Nội dung: ${escapeHTML(
+          <p class='break-words line-clamp-1'>Nội dung: ${escapeHTML(
             content
           )}</p>
         </div>
