@@ -4,8 +4,12 @@ import Error from "../Error";
 const app = document.querySelector("#app");
 const routerNavigo = new Navigo("/", { linksSelector: "a", hash: false });
 
-const renderApp = (page, defaultLayout, isNotFound = false) => {
-  if (!isNotFound) {
+window.navigate = (path) => {
+  routerNavigo.navigate(path);
+};
+
+const renderApp = (page, defaultLayout, isInvalidPage = false) => {
+  if (!isInvalidPage) {
     return (app.innerHTML = defaultLayout.replace("{body}", page));
   }
   return (app.innerHTML = page);
