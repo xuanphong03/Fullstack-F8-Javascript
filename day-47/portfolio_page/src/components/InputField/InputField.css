@@ -1,0 +1,12 @@
+input + .input-placeholder {
+  pointer-events: none;
+  transition: top 0.2s ease;
+}
+
+input:focus + .input-placeholder {
+  top: 0;
+  font-size: 12px;
+  padding: 0 5px;
+  background: #fff;
+  line-height: 1;
+}
